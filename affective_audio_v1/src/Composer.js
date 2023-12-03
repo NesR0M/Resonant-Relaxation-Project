@@ -416,7 +416,7 @@ const MidiComposer = ({ onCompositionComplete }) => {
   }`;
 
   const openai = new OpenAI({
-    apiKey: "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",
+    apiKey: process.env.REACT_APP_OPENAI_KEY,
     dangerouslyAllowBrowser: true,
   });
 
