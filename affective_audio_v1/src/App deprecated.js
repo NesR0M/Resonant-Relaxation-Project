@@ -125,7 +125,7 @@ const notationExample = `melody_pitch_duration_data = [[60, 0.5], [62, 0.5], [64
 [69, 0.125], [0, 0.125], [67, 0.125], [64, 1]]`;
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: "sk-",
   dangerouslyAllowBrowser: true,
 });
 
