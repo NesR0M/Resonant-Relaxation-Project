@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+
 import MidiPlayer from "./Player";
-import MidiComposer, { notationExample } from "./Composer";
+import MidiComposer from "./Composer";
+import { notationExample } from "./midiConstants";
+import MidiLoader from "./LoadMidi";
 
 function App() {
   const [midiData, setMidiData] = useState(null);
@@ -13,8 +16,15 @@ function App() {
   };
 
   const loadExampleData = () => {
-    setMidiData(notationExample);
+    const midiJson = JSON.parse(notationExample);
+    setMidiData(midiJson);
+
     console.log("example loaded...");
+  };
+
+  const handleCompositionComplete = (jsonData) => {
+    setMidiData(jsonData);
+    console.log("MIDI Data:", jsonData);
   };
 
   return (
@@ -27,6 +37,7 @@ function App() {
         <MidiComposer onCompositionComplete={setMidiData} />
         <button onClick={loadExampleData}>Load example sound</button>
         <button onClick={resetMidiData}>Delete sound data</button>
+        <MidiLoader onCompositionComplete={handleCompositionComplete} />
         <MidiPlayer midiJsonData={midiData} />
       </header>
     </div>

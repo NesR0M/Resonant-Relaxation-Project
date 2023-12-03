@@ -1,23 +1,11 @@
-// Key Points of the Template:
-// Synthesizer Initialization: A Tone.js Synth is created with a sine wave oscillator. You can add more configurations, like filters, in this section.
-
-// playMidi Function: This function parses the MIDI JSON data and schedules each note for playback using synth.triggerAttackRelease.
-
-// playSound Function: This function acts as a handler to start MIDI playback. It parses the MIDI JSON data provided as a prop and then calls playMidi.
-
-// useEffect Hook: It's used for component lifecycle management, especially for cleaning up the synthesizer and stopping the Tone Transport when the component unmounts.
-
-// Render Method: The component renders a button that, when clicked, triggers the playSound function to start playback.
-
-// Error Handling: Basic error handling is included, logging an error message if no MIDI composition data is available.
-
-// Component Props: The midiJsonData prop is expected to be passed to the MidiPlayer component, containing the MIDI JSON data to be played.
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
 
-// React component to handle MIDI playback using Tone.js
 const MidiPlayer = ({ midiJsonData }) => {
+  // State variables for filter frequencies
+  const [lowPassFilterFreq, setLowPassFilterFreq] = useState(5000); // Default low-pass frequency
+  const [highPassFilterFreq, setHighPassFilterFreq] = useState(100); // Default high-pass frequency
+
   // Initialize the synthesizer
   const synth = new Tone.Synth({
     oscillator: {
@@ -26,12 +14,24 @@ const MidiPlayer = ({ midiJsonData }) => {
     // Additional configurations (like filters) can be added here
   }).toDestination();
 
+  // Filters initialization
+  const lowPassFilter = new Tone.Filter(
+    lowPassFilterFreq,
+    "lowpass"
+  ).toDestination();
+  const highPassFilter = new Tone.Filter(
+    highPassFilterFreq,
+    "highpass"
+  ).toDestination();
+
+  // Connect the synth to the filters
+  synth.chain(lowPassFilter, highPassFilter);
+
   // Function to play MIDI data
   const playMidi = (midiJson) => {
     const now = Tone.now();
     midiJson.tracks.forEach((track) => {
       track.notes.forEach((note) => {
-        // Trigger each note with the specified parameters
         synth.triggerAttackRelease(
           Tone.Frequency(note.midi, "midi").toNote(), // Convert MIDI number to note
           note.duration, // Duration of the note
@@ -40,44 +40,71 @@ const MidiPlayer = ({ midiJsonData }) => {
         );
       });
     });
-
-    // Start the Tone Transport to manage timing
     Tone.Transport.start();
   };
 
   // Function to handle MIDI playback
   const playSound = () => {
     if (midiJsonData) {
-      // Parse MIDI JSON data and play it
-      const midiJson = JSON.parse(midiJsonData);
-      playMidi(midiJson);
+      playMidi(midiJsonData);
     } else {
       console.error("No MIDI composition available");
     }
   };
 
-  // useEffect hook to manage component lifecycle
-  useEffect(() => {
-    // Any setup code can go here
+  // Function to stop MIDI playback //TODO DOES NOT WORK YET
 
+  const stopSound = () => {
+    Tone.Transport.stop();
+    Tone.Transport.position = 0; // Reset the Transport position
+    //synth.dispose();??
+  };
+
+  // useEffect hook for filter frequency updates
+  useEffect(() => {
+    lowPassFilter.frequency.value = lowPassFilterFreq;
+    highPassFilter.frequency.value = highPassFilterFreq;
+  }, [lowPassFilterFreq, highPassFilterFreq]);
+
+  // useEffect hook for component lifecycle management
+  useEffect(() => {
     return () => {
-      // Cleanup code: Stop the Transport and dispose of the synth
       Tone.Transport.stop();
       synth.dispose();
     };
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
   // Render method for the component
   return (
     <div>
+      <div>
+        <label>
+          Low-pass Filter Frequency:
+          <input
+            type="number"
+            value={lowPassFilterFreq}
+            onChange={(e) => setLowPassFilterFreq(e.target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          High-pass Filter Frequency:
+          <input
+            type="number"
+            value={highPassFilterFreq}
+            onChange={(e) => setHighPassFilterFreq(e.target.value)}
+          />
+        </label>
+      </div>
       <button onClick={playSound} disabled={!midiJsonData}>
         Play sound
+      </button>
+      <button onClick={stopSound} disabled={!midiJsonData}>
+        Stop sound
       </button>
     </div>
   );
 };
 
 export default MidiPlayer;
-
-// Usage in parent component
-// <MidiPlayer midiJsonData={gptComposition} />

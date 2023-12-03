@@ -1,418 +1,8 @@
 import React from "react";
 import OpenAI from "openai";
+
 import { Midi } from "@tonejs/midi";
-
-const longString = `I need assistance in producing AI-generated text
-that I convert to music using MIDI files. 
-The way I would like you to generate them is as
-follows:
-{
-// the transport and timing data
-header: {
-  name: String,                     // the name of the first empty track, 
-                                    // which is usually the song name
-  tempos: TempoEvent[],             // the tempo, e.g. 120
-  timeSignatures: TimeSignatureEvent[],  // the time signature, e.g. [4, 4],
-
-  PPQ: Number                       // the Pulses Per Quarter of the midi file
-                                    // this is read only
-},
-
-duration: Number,                   // the time until the last note finishes
-
-// an array of midi tracks
-tracks: [
-  {
-    name: String,                   // the track name if one was given
-
-    channel: Number,                // channel
-                                    // the ID for this channel; 9 and 10 are
-                                    // reserved for percussion
-    notes: [
-      {
-        midi: Number,               // midi number, e.g. 60
-        time: Number,               // time in seconds
-        ticks: Number,              // time in ticks
-        name: String,               // note name, e.g. "C4",
-        pitch: String,              // the pitch class, e.g. "C",
-        octave : Number,            // the octave, e.g. 4
-        velocity: Number,           // normalized 0-1 velocity
-        duration: Number,           // duration in seconds between noteOn and noteOff
-      }
-    ],
-
-    // midi control changes
-    controlChanges: {
-      // if there are control changes in the midi file
-      '91': [
-        {
-          number: Number,           // the cc number
-          ticks: Number,            // time in ticks
-          time: Number,             // time in seconds
-          value: Number,            // normalized 0-1
-        }
-      ],
-    },
-
-    instrument: {                   // and object representing the program change events
-      number : Number,              // the instrument number 0-127
-      family: String,               // the family of instruments, read only.
-      name : String,                // the name of the instrument
-      percussion: Boolean,          // if the instrument is a percussion instrument
-    },          
-  }
-]
-} here is a filled out example: "{
-"header": {
-  "keySignatures": [],
-  "meta": [],
-  "name": "",
-  "ppq": 240,
-  "tempos": [
-    {
-      "bpm": 120,
-      "ticks": 0
-    }
-  ],
-  "timeSignatures": [
-    {
-      "ticks": 0,
-      "timeSignature": [
-        4,
-        4
-      ],
-      "measures": 0
-    }
-  ]
-},
-"tracks": [
-  {
-    "channel": 0,
-    "controlChanges": {
-      "7": [
-        {
-          "number": 7,
-          "ticks": 0,
-          "time": 0,
-          "value": 1
-        }
-      ]
-    },
-    "pitchBends": [],
-    "instrument": {
-      "family": "bass",
-      "number": 33,
-      "name": "electric bass (finger)"
-    },
-    "name": "",
-    "notes": [
-      {
-        "duration": 0.26875,
-        "durationTicks": 129,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 0,
-        "time": 0,
-        "velocity": 0.6141732283464567
-      },
-      {
-        "duration": 0.2562500000000001,
-        "durationTicks": 123,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 360,
-        "time": 0.75,
-        "velocity": 0.6377952755905512
-      },
-      {
-        "duration": 0.26875000000000004,
-        "durationTicks": 129,
-        "midi": 50,
-        "name": "D3",
-        "ticks": 480,
-        "time": 1,
-        "velocity": 0.6220472440944882
-      },
-      {
-        "duration": 0.1333333333333333,
-        "durationTicks": 64,
-        "midi": 52,
-        "name": "E3",
-        "ticks": 600,
-        "time": 1.25,
-        "velocity": 0.5354330708661418
-      },
-      {
-        "duration": 0.7333333333333334,
-        "durationTicks": 352,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 840,
-        "time": 1.75,
-        "velocity": 0.6456692913385826
-      },
-      {
-        "duration": 0.4791666666666665,
-        "durationTicks": 230,
-        "midi": 43,
-        "name": "G2",
-        "ticks": 1200,
-        "time": 2.5,
-        "velocity": 0.4881889763779528
-      },
-      {
-        "duration": 0.28125,
-        "durationTicks": 135,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 1440,
-        "time": 3,
-        "velocity": 0.6299212598425197
-      },
-      {
-        "duration": 0.16041666666666643,
-        "durationTicks": 77,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 1920,
-        "time": 4,
-        "velocity": 0.6929133858267716
-      },
-      {
-        "duration": 0.16041666666666643,
-        "durationTicks": 77,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 2280,
-        "time": 4.75,
-        "velocity": 0.6062992125984252
-      },
-      {
-        "duration": 0.25416666666666643,
-        "durationTicks": 122,
-        "midi": 50,
-        "name": "D3",
-        "ticks": 2400,
-        "time": 5,
-        "velocity": 0.7086614173228346
-      },
-      {
-        "duration": 0.2020833333333334,
-        "durationTicks": 97,
-        "midi": 52,
-        "name": "E3",
-        "ticks": 2520,
-        "time": 5.25,
-        "velocity": 0.5905511811023622
-      },
-      {
-        "duration": 0.760416666666667,
-        "durationTicks": 365,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 2760,
-        "time": 5.75,
-        "velocity": 0.5905511811023622
-      },
-      {
-        "duration": 0.47916666666666696,
-        "durationTicks": 230,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 3120,
-        "time": 6.5,
-        "velocity": 0.6062992125984252
-      },
-      {
-        "duration": 0.1875,
-        "durationTicks": 90,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 3360,
-        "time": 7,
-        "velocity": 0.6141732283464567
-      }
-    ],
-    "endOfTrackTicks": 3839
-  }
-]
-}"`;
-
-const notationExample = `{
-"header": {
-  "keySignatures": [],
-  "meta": [],
-  "name": "",
-  "ppq": 240,
-  "tempos": [
-    {
-      "bpm": 120,
-      "ticks": 0
-    }
-  ],
-  "timeSignatures": [
-    {
-      "ticks": 0,
-      "timeSignature": [
-        4,
-        4
-      ],
-      "measures": 0
-    }
-  ]
-},
-"tracks": [
-  {
-    "channel": 0,
-    "controlChanges": {
-      "7": [
-        {
-          "number": 7,
-          "ticks": 0,
-          "time": 0,
-          "value": 1
-        }
-      ]
-    },
-    "pitchBends": [],
-    "instrument": {
-      "family": "bass",
-      "number": 33,
-      "name": "electric bass (finger)"
-    },
-    "name": "",
-    "notes": [
-      {
-        "duration": 0.26875,
-        "durationTicks": 129,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 0,
-        "time": 0,
-        "velocity": 0.6141732283464567
-      },
-      {
-        "duration": 0.2562500000000001,
-        "durationTicks": 123,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 360,
-        "time": 0.75,
-        "velocity": 0.6377952755905512
-      },
-      {
-        "duration": 0.26875000000000004,
-        "durationTicks": 129,
-        "midi": 50,
-        "name": "D3",
-        "ticks": 480,
-        "time": 1,
-        "velocity": 0.6220472440944882
-      },
-      {
-        "duration": 0.1333333333333333,
-        "durationTicks": 64,
-        "midi": 52,
-        "name": "E3",
-        "ticks": 600,
-        "time": 1.25,
-        "velocity": 0.5354330708661418
-      },
-      {
-        "duration": 0.7333333333333334,
-        "durationTicks": 352,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 840,
-        "time": 1.75,
-        "velocity": 0.6456692913385826
-      },
-      {
-        "duration": 0.4791666666666665,
-        "durationTicks": 230,
-        "midi": 43,
-        "name": "G2",
-        "ticks": 1200,
-        "time": 2.5,
-        "velocity": 0.4881889763779528
-      },
-      {
-        "duration": 0.28125,
-        "durationTicks": 135,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 1440,
-        "time": 3,
-        "velocity": 0.6299212598425197
-      },
-      {
-        "duration": 0.16041666666666643,
-        "durationTicks": 77,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 1920,
-        "time": 4,
-        "velocity": 0.6929133858267716
-      },
-      {
-        "duration": 0.16041666666666643,
-        "durationTicks": 77,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 2280,
-        "time": 4.75,
-        "velocity": 0.6062992125984252
-      },
-      {
-        "duration": 0.25416666666666643,
-        "durationTicks": 122,
-        "midi": 50,
-        "name": "D3",
-        "ticks": 2400,
-        "time": 5,
-        "velocity": 0.7086614173228346
-      },
-      {
-        "duration": 0.2020833333333334,
-        "durationTicks": 97,
-        "midi": 52,
-        "name": "E3",
-        "ticks": 2520,
-        "time": 5.25,
-        "velocity": 0.5905511811023622
-      },
-      {
-        "duration": 0.760416666666667,
-        "durationTicks": 365,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 2760,
-        "time": 5.75,
-        "velocity": 0.5905511811023622
-      },
-      {
-        "duration": 0.47916666666666696,
-        "durationTicks": 230,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 3120,
-        "time": 6.5,
-        "velocity": 0.6062992125984252
-      },
-      {
-        "duration": 0.1875,
-        "durationTicks": 90,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 3360,
-        "time": 7,
-        "velocity": 0.6141732283464567
-      }
-    ],
-    "endOfTrackTicks": 3839
-  }
-]
-}`;
+import { prompt } from "./midiConstants";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_KEY,
@@ -459,8 +49,8 @@ const MidiComposer = ({ onCompositionComplete }) => {
           {
             role: "user",
             content:
-              longString +
-              " Please give me a happy melody, without commentary or explanation only the melody.",
+              prompt +
+              " Create me that melody without commentary or explanation only the melody.",
           },
         ],
         temperature: 1,
@@ -468,19 +58,83 @@ const MidiComposer = ({ onCompositionComplete }) => {
 
       let output = completion.choices[0]?.message?.content;
       let composition = cleanGPTOutput(output);
-
-      onCompositionComplete(composition);
-
       console.log(composition);
+
+      // Parse MIDI JSON data
+      const midiJsonData = JSON.parse(composition);
+      onCompositionComplete(midiJsonData);
+      createMidi(midiJsonData);
+
       console.log("This was the original message: " + output);
     } catch (error) {
       console.error("Error with OpenAI completion:", error);
     }
-    //createMidi(gptComposition);
   };
 
-  const createMidi = () => {
-    //TODO create Midi file from JSON using tone.js/midi
+  const createMidi = (midiData) => {
+    const midi = new Midi();
+
+    // Set MIDI header properties
+    midi.header.setTempo(midiData.header.tempos[0].bpm);
+    midi.header.timeSignatures.push({
+      measures: midiData.header.timeSignatures[0].measures,
+      timeSignature: midiData.header.timeSignatures[0].timeSignature,
+      ticks: midiData.header.timeSignatures[0].ticks,
+    });
+
+    // Process each track in the JSON data
+    midiData.tracks.forEach((trackData) => {
+      const track = midi.addTrack();
+      track.channel = trackData.channel;
+      track.name = trackData.name;
+      if (trackData.instrument && trackData.instrument.number !== undefined) {
+        // Assuming the Midi library supports this way of setting instrument
+        track.instrument = trackData.instrument;
+      }
+
+      // Add notes to the track
+      trackData.notes.forEach((noteData) => {
+        track.addNote({
+          midi: noteData.midi,
+          time: noteData.time,
+          duration: noteData.duration,
+          velocity: noteData.velocity,
+        });
+      });
+
+      // Add control changes if any
+      if (trackData.controlChanges) {
+        Object.entries(trackData.controlChanges).forEach(
+          ([number, changes]) => {
+            changes.forEach((change) => {
+              track.addCC({
+                number: change.number,
+                ticks: change.ticks,
+                value: change.value,
+              });
+            });
+          }
+        );
+      }
+    });
+
+    // Generate the MIDI file as a Blob
+    const midiFile = midi.toArray();
+    const blob = new Blob([midiFile], { type: "audio/midi" });
+
+    // Create a data URI for the Blob
+    const dataUri = URL.createObjectURL(blob);
+
+    // Log the downloadable link to the console
+    console.log("Download MIDI file: ", dataUri);
+
+    // Optionally, you can also create an anchor element for direct download
+    const downloadLink = document.createElement("a");
+    downloadLink.href = dataUri;
+    downloadLink.download = "composition.mid";
+    downloadLink.innerText = "Download MIDI";
+    document.body.appendChild(downloadLink);
+    console.log("Click the link to download MIDI file: ", downloadLink);
   };
 
   return (
@@ -491,4 +145,3 @@ const MidiComposer = ({ onCompositionComplete }) => {
 };
 
 export default MidiComposer;
-export { notationExample };
