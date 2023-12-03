@@ -70,7 +70,9 @@ const MidiPlayer = ({ midiJsonData }) => {
   // Render method for the component
   return (
     <div>
-      <button onClick={playSound}>Play Vincent MIDI</button>
+      <button onClick={playSound} disabled={!midiJsonData}>
+        Play sound
+      </button>
     </div>
   );
 };
