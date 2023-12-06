@@ -3,16 +3,19 @@ import logo from "./logo.svg";
 import "./App.css";
 
 import MidiPlayer from "./Player";
-import MidiComposer from "./Composer";
+import MidiComposer from "./SparkleComposer";
 import { notationExample } from "./prompts";
 import MidiLoader from "./LoadMidi";
+import BaselineComposer from "./BaselineComposer";
 
 function App() {
   const [midiData, setMidiData] = useState(null);
   const [error, setError] = useState(null);
+  const [baselineMidiData, setBaselineMidiData] = useState(null);
 
   const resetMidiData = () => {
     setMidiData(null);
+    setBaselineMidiData(null);
     setError(null);
     console.log("midiData deleted.");
   };
@@ -48,7 +51,8 @@ function App() {
           Edit <code>src/App.js</code> and save to reload.
         </p>
         {error && <div className="error">{error}</div>}
-        <MidiComposer onCompositionComplete={setMidiData} />
+        <BaselineComposer onMidiGenerated={handleCompositionComplete}/>
+        <MidiComposer onCompositionComplete={handleCompositionComplete} />
         <button onClick={loadExampleData}>Load example sound</button>
         <button onClick={resetMidiData}>Delete sound data</button>
         <MidiLoader onCompositionComplete={handleCompositionComplete} />
