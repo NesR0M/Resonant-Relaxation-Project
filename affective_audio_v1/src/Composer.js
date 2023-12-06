@@ -2,7 +2,7 @@ import React from "react";
 import OpenAI from "openai";
 
 import { Midi } from "@tonejs/midi";
-import { prompt } from "./midiConstants";
+import { prompt } from "./prompts";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_KEY,
@@ -49,14 +49,15 @@ const MidiComposer = ({ onCompositionComplete }) => {
           {
             role: "user",
             content:
-              prompt +
-              " Create me that melody without commentary or explanation only the melody.",
+              prompt + "Give me only the MIDI File Syntax nothing else.",
           },
         ],
         temperature: 1,
       });
 
       let output = completion.choices[0]?.message?.content;
+      console.log("This was the original message: " + output);
+
       let composition = cleanGPTOutput(output);
       console.log(composition);
 
@@ -65,7 +66,6 @@ const MidiComposer = ({ onCompositionComplete }) => {
       onCompositionComplete(midiJsonData);
       createMidi(midiJsonData);
 
-      console.log("This was the original message: " + output);
     } catch (error) {
       console.error("Error with OpenAI completion:", error);
     }

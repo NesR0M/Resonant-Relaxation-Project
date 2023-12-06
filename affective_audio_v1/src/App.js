@@ -4,7 +4,7 @@ import "./App.css";
 
 import MidiPlayer from "./Player";
 import MidiComposer from "./Composer";
-import { notationExample } from "./midiConstants";
+import { notationExample } from "./prompts";
 import MidiLoader from "./LoadMidi";
 
 function App() {
