@@ -27,21 +27,45 @@ const MidiPlayer = ({ midiJsonData }) => {
   // Connect the synth to the filters
   synth.chain(lowPassFilter, highPassFilter);
 
+  let midiPart;
+  let midiLoop;
+
   // Function to play MIDI data
   const playMidi = (midiJson) => {
-    const now = Tone.now();
+    if (midiPart) {
+      midiPart.stop();
+      midiLoop.stop();
+    }
+
+    const notes = [];
     midiJson.tracks.forEach((track) => {
       track.notes.forEach((note) => {
-        synth.triggerAttackRelease(
-          Tone.Frequency(note.midi, "midi").toNote(), // Convert MIDI number to note
-          note.duration, // Duration of the note
-          now + note.time, // Start time of the note
-          note.velocity // Velocity of the note
-        );
+        notes.push({
+          note: Tone.Frequency(note.midi, "midi").toNote(),
+          time: note.time,
+          duration: note.duration,
+          velocity: note.velocity,
+        });
       });
     });
+
+    midiPart = new Tone.Part((time, value) => {
+      synth.triggerAttackRelease(value.note, value.duration, time, value.velocity);
+    }, notes);
+
+    midiPart.loop = true;
+    midiPart.loopStart = 0;
+    midiPart.loopEnd = midiPart.length - 6; // Adjusted loopEnd slightly
+
+    midiLoop = new Tone.Loop(() => {
+      midiPart.start(0);
+    }, midiPart.length * notes.length);
+
     Tone.Transport.start();
+    midiLoop.start(0);
   };
+
+
 
   // Function to handle MIDI playback
   const playSound = () => {
@@ -52,19 +76,20 @@ const MidiPlayer = ({ midiJsonData }) => {
     }
   };
 
-  // Function to stop MIDI playback //TODO DOES NOT WORK YET
-
+  // Function to stop MIDI playback
   const stopSound = () => {
+    if (midiPart) {
+      midiPart.stop();
+    }
     Tone.Transport.stop();
-    Tone.Transport.position = 0; // Reset the Transport position
-    //synth.dispose();??
+    Tone.Transport.position = 0;
   };
 
   // useEffect hook for filter frequency updates
   useEffect(() => {
     lowPassFilter.frequency.value = lowPassFilterFreq;
     highPassFilter.frequency.value = highPassFilterFreq;
-  }, [lowPassFilterFreq, highPassFilterFreq]);
+  }, [lowPassFilterFreq, highPassFilterFreq, lowPassFilter, highPassFilter]);
 
   // useEffect hook for component lifecycle management
   useEffect(() => {
@@ -72,7 +97,7 @@ const MidiPlayer = ({ midiJsonData }) => {
       Tone.Transport.stop();
       synth.dispose();
     };
-  }, []);
+  }, [synth]);
 
   // Render method for the component
   return (
