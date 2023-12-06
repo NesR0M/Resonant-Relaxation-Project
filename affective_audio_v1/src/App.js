@@ -9,22 +9,35 @@ import MidiLoader from "./LoadMidi";
 
 function App() {
   const [midiData, setMidiData] = useState(null);
+  const [error, setError] = useState(null);
 
   const resetMidiData = () => {
     setMidiData(null);
+    setError(null);
     console.log("midiData deleted.");
   };
 
   const loadExampleData = () => {
-    const midiJson = JSON.parse(notationExample);
-    setMidiData(midiJson);
-
-    console.log("example loaded...");
+    try {
+      const midiJson = JSON.parse(notationExample);
+      setMidiData(midiJson);
+      console.log("example loaded...");
+    } catch (e) {
+      setError("Error loading example data: " + e.message);
+      console.error("Error loading example data:", e);
+    }
   };
 
   const handleCompositionComplete = (jsonData) => {
-    setMidiData(jsonData);
-    console.log("MIDI Data:", jsonData);
+    try {
+      // Assuming jsonData should be a valid JSON object/string
+      // Add any necessary validation or parsing here if jsonData is a string
+      setMidiData(jsonData);
+      console.log("MIDI Data:", jsonData);
+    } catch (e) {
+      setError("Error in composition completion: " + e.message);
+      console.error("Error in composition completion:", e);
+    }
   };
 
   return (
@@ -34,6 +47,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+        {error && <div className="error">{error}</div>}
         <MidiComposer onCompositionComplete={setMidiData} />
         <button onClick={loadExampleData}>Load example sound</button>
         <button onClick={resetMidiData}>Delete sound data</button>

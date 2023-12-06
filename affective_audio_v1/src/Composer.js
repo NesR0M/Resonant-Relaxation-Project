@@ -1,13 +1,18 @@
 import React from "react";
 import OpenAI from "openai";
-
 import { Midi } from "@tonejs/midi";
 import { prompt } from "./prompts";
 
-const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// Initialize OpenAI only if the API key is available
+let openai;
+if (process.env.REACT_APP_OPENAI_KEY) {
+  openai = new OpenAI({
+    apiKey: process.env.REACT_APP_OPENAI_KEY,
+    dangerouslyAllowBrowser: true,
+  });
+} else {
+  console.error("OpenAI API key is not defined.");
+}
 
 const MidiComposer = ({ onCompositionComplete }) => {
   const cleanGPTOutput = (inputString) => {
@@ -41,6 +46,11 @@ const MidiComposer = ({ onCompositionComplete }) => {
   };
 
   const composeGPT = async () => {
+    if (!openai) {
+      console.error("OpenAI instance is not initialized.");
+      return;
+    }
+
     console.log("gpt is composing...");
     try {
       let completion = await openai.chat.completions.create({
@@ -48,23 +58,33 @@ const MidiComposer = ({ onCompositionComplete }) => {
         messages: [
           {
             role: "user",
-            content:
-              prompt + "Give me only the MIDI File Syntax nothing else.",
+            content: prompt + "Give me only the MIDI File Syntax nothing else.",
           },
         ],
         temperature: 1,
       });
 
       let output = completion.choices[0]?.message?.content;
+      if (!output) {
+        console.error("No output received from OpenAI.");
+        return;
+      }
       console.log("This was the original message: " + output);
 
       let composition = cleanGPTOutput(output);
+      if (!composition) {
+        console.error("Invalid or incomplete JSON data received.");
+        return;
+      }
       console.log(composition);
 
-      // Parse MIDI JSON data
-      const midiJsonData = JSON.parse(composition);
-      onCompositionComplete(midiJsonData);
-      createMidi(midiJsonData);
+      try {
+        const midiJsonData = JSON.parse(composition);
+        onCompositionComplete(midiJsonData);
+        createMidi(midiJsonData);
+      } catch (jsonError) {
+        console.error("Error parsing JSON data: ", jsonError);
+      }
 
     } catch (error) {
       console.error("Error with OpenAI completion:", error);

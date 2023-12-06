@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import * as Tone from "tone";
+import { Waveform, Spectrogram } from 'react-audio-visualize';
 
 const MidiPlayer = ({ midiJsonData }) => {
   // State variables for filter frequencies
   const [lowPassFilterFreq, setLowPassFilterFreq] = useState(5000); // Default low-pass frequency
   const [highPassFilterFreq, setHighPassFilterFreq] = useState(100); // Default high-pass frequency
+
 
   // Initialize the synthesizer
   const synth = new Tone.Synth({
