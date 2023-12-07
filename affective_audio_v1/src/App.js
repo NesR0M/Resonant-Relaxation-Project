@@ -16,12 +16,12 @@ function App() {
   const [error, setError] = useState(null);
   const [sparkleData, setSparkleData] = useState(null);
 
-  const [startFrequency, setStartFrequency] = useState(null);
-  const [durationInSeconds, setDurationInSeconds] = useState(null);
-  const [attackInSec, setAttackInSec] = useState(null);
-  const [decayInSec, setDecayInSec] = useState(null);
-  const [sustainInSec, setSustainInSec] = useState(null);
-  const [releaseInSec, setReleaseInSec] = useState(null);
+  const [startFrequency, setStartFrequency] = useState(440); // Default values
+  const [durationInSeconds, setDurationInSeconds] = useState(60);
+  const [attackInSec, setAttackInSec] = useState(0.5);
+  const [decayInSec, setDecayInSec] = useState(0.5);
+  const [sustainInSec, setSustainInSec] = useState(0.5);
+  const [releaseInSec, setReleaseInSec] = useState(0.5);
 
   const resetData = () => {
     setBaselineData(null);
@@ -101,7 +101,13 @@ function App() {
 
         <Row>
           <Col>
-            <Player midiJsonData={baselineData} />
+            <Player 
+                midiJsonData={baselineData}
+                attackDuration={attackInSec}
+                decayDuration={decayInSec}
+                sustainLevel={sustainInSec}
+                releaseDuration={releaseInSec}
+              />
           </Col>
         </Row>
       </Container>

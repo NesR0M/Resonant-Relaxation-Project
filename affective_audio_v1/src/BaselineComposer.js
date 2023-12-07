@@ -126,7 +126,7 @@ const BaselineComposer = ({
             <Col sm="6">
               <Form.Range
                 min="0"
-                max="5"
+                max="10"
                 step="0.1"
                 value={decayInSec}
                 onChange={(e) => setDecayInSec(parseFloat(e.target.value))}
@@ -136,7 +136,7 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Sustain Level (Percentage): {sustainInSec}
+              Sustain Level (Seconds): {sustainInSec}
             </Form.Label>
             <Col sm="6">
               <Form.Range
