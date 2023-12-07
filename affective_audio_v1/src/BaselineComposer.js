@@ -49,8 +49,9 @@ const BaselineComposer = ({
         midi: Tone.ftom(startFrequency),
         time: currentTime,
         duration: noteDuration,
+        velocity: 0.8,
       });
-      console.log(`Added note at ${currentTime} seconds, frequency: ${startFrequency} Hz, duration: ${noteDuration} seconds.`);
+      //console.log("Added note at ${currentTime} seconds, frequency: ${startFrequency} Hz, duration: ${noteDuration} seconds."");
   
       // Update currentTime to include the note and the rest period
       currentTime += noteDuration + restDuration;
@@ -60,6 +61,7 @@ const BaselineComposer = ({
   
     // Pass the generated MIDI data up
     onMidiGenerated(midi);
+    console.log(midi);
 
     onStartFrequencyChange(startFrequency);
     onDurationInSecondsChange(durationInSeconds);
@@ -136,7 +138,7 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Sustain Level (Percentage): {sustainInSec}
+              Sustain Level (Seconds): {sustainInSec}
             </Form.Label>
             <Col sm="6">
               <Form.Range

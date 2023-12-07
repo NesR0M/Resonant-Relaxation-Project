@@ -101,7 +101,12 @@ function App() {
 
         <Row>
           <Col>
-            <Player midiJsonData={baselineData} />
+            <Player midiJsonData={baselineData}
+            onAttackInSecChange={attackInSec}
+            onDecayInSecChange={decayInSec}
+            onSustainInSecChange={sustainInSec}
+            onReleaseInSecChange={releaseInSec}
+             />
           </Col>
         </Row>
       </Container>

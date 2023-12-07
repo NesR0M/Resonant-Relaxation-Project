@@ -2,12 +2,17 @@ import React, { useEffect, useState, useRef } from "react";
 import * as Tone from "tone";
 import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 
-const Player = ({ midiJsonData }) => {
+const Player = ({ 
+  midiJsonData, 
+  onAttackInSecChange,
+  onDecayInSecChange,
+  onSustainInSecChange,
+  onReleaseInSecChange}) => {
+
   const [lowPassFilterFreq, setLowPassFilterFreq] = useState(500);
   const [highPassFilterFreq, setHighPassFilterFreq] = useState(50);
   const [volume, setVolume] = useState(50); // Volume as a percentage
-  const [attackDuration, setAttackDuration] = useState(0.5);
-  const [releaseDuration, setReleaseDuration] = useState(0.5);
+
   const [isPlaying, setIsPlaying] = useState(false);
 
   const synthRef = useRef(null);
@@ -54,54 +59,62 @@ const Player = ({ midiJsonData }) => {
 
   const playMidi = (midiJson) => {
     try {
-      synthRef.current.envelope.attack = attackDuration;
-      synthRef.current.envelope.release = releaseDuration;
+      // Ensure these are numerical values
+      const attackTime = onAttackInSecChange;
+      const releaseTime = onReleaseInSecChange;
+  
+      synthRef.current.envelope.attackCurve = "linear";
+      synthRef.current.envelope.releaseCurve = "linear";
 
+      //synthRef.current.envelope.attack = attackTime;
+      //synthRef.current.envelope.release = releaseTime;
+  
       const notes = midiJson.tracks.flatMap(track =>
         track.notes.map(note => ({
           note: Tone.Frequency(note.midi, "midi").toNote(),
           time: note.time,
-          duration: note.duration,
+          duration: note.duration, // Ensure this is a number representing seconds
           velocity: note.velocity
         }))
       );
-
+  
       midiPartRef.current = new Tone.Part((time, note) => {
         synthRef.current.triggerAttackRelease(note.note, note.duration, time, note.velocity);
       }, notes);
-
+  
       midiPartRef.current.loop = true;
       midiPartRef.current.loopStart = 0;
       midiPartRef.current.loopEnd = '1m';
-
+  
       Tone.Transport.start();
       midiPartRef.current.start(0);
     } catch (error) {
       console.error("Error in playMidi:", error);
     }
   };
+  
 
   const playSound = async () => {
-    try {
-      if (!isPlaying) {
-        if (midiJsonData) {
-          await Tone.start();
-          if (Tone.Transport.state !== "started") {
-            playMidi(midiJsonData);
-          } else {
-            Tone.Transport.start();
-          }
-          setIsPlaying(true);
+  try {
+    if (!isPlaying) {
+      if (midiJsonData) {
+        await Tone.start();
+        if (Tone.Transport.state !== "started") {
+          playMidi(midiJsonData);
+        } else {
+          Tone.Transport.start();
         }
-      } else {
-        midiPartRef.current.stop();
-        Tone.Transport.pause();
-        setIsPlaying(false);
+        setIsPlaying(true);
       }
-    } catch (error) {
-      console.error("Error in playSound:", error);
+    } else {
+      midiPartRef.current.stop();
+      Tone.Transport.pause();
+      setIsPlaying(false);
     }
-  };
+  } catch (error) {
+    console.error("Error in playSound:", error);
+  }
+};
 
   const stopSound = () => {
     try {
