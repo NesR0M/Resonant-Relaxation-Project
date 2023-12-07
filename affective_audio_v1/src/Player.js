@@ -5,9 +5,10 @@ import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 const MidiPlayer = ({ midiJsonData }) => {
   const [lowPassFilterFreq, setLowPassFilterFreq] = useState(500);
   const [highPassFilterFreq, setHighPassFilterFreq] = useState(50);
-  const [volume, setVolume] = useState(-12);
+  const [volume, setVolume] = useState(50); // Volume as a percentage
   const [attackDuration, setAttackDuration] = useState(0.5);
   const [releaseDuration, setReleaseDuration] = useState(0.5);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const synthRef = useRef(null);
   const lowPassFilterRef = useRef(null);
@@ -19,7 +20,7 @@ const MidiPlayer = ({ midiJsonData }) => {
     synthRef.current = new Tone.Synth().toDestination();
     lowPassFilterRef.current = new Tone.Filter(lowPassFilterFreq, "lowpass").toDestination();
     highPassFilterRef.current = new Tone.Filter(highPassFilterFreq, "highpass").toDestination();
-    volumeRef.current = new Tone.Volume(volume).toDestination();
+    volumeRef.current = new Tone.Volume(percentToDecibels(volume)).toDestination();
 
     synthRef.current.chain(
       lowPassFilterRef.current,
@@ -42,8 +43,14 @@ const MidiPlayer = ({ midiJsonData }) => {
   }, [lowPassFilterFreq, highPassFilterFreq]);
 
   useEffect(() => {
-    volumeRef.current.volume.value = volume;
+    volumeRef.current.volume.value = percentToDecibels(volume);
   }, [volume]);
+
+  const percentToDecibels = (percent) => {
+    const minDb = -48;
+    const maxDb = 0;
+    return (percent / 100) * (maxDb - minDb) + minDb;
+  };
 
   const playMidi = (midiJson) => {
     try {
@@ -76,12 +83,20 @@ const MidiPlayer = ({ midiJsonData }) => {
 
   const playSound = async () => {
     try {
-      if (midiJsonData) {
-        await Tone.start();
-        playMidi(midiJsonData);
-        console.log("MIDI started playing");
+      if (!isPlaying) {
+        if (midiJsonData) {
+          await Tone.start();
+          if (Tone.Transport.state !== "started") {
+            playMidi(midiJsonData);
+          } else {
+            Tone.Transport.start();
+          }
+          setIsPlaying(true);
+        }
       } else {
-        console.error("No MIDI composition available");
+        midiPartRef.current.stop();
+        Tone.Transport.pause();
+        setIsPlaying(false);
       }
     } catch (error) {
       console.error("Error in playSound:", error);
@@ -95,14 +110,14 @@ const MidiPlayer = ({ midiJsonData }) => {
       }
       Tone.Transport.stop();
       Tone.Transport.position = 0;
-      console.log("MIDI Playback Stopped");
+      setIsPlaying(false);
     } catch (error) {
       console.error("Error in stopSound:", error);
     }
   };
 
   const handleVolumeChange = (e) => {
-    setVolume(parseFloat(e.target.value));
+    setVolume(parseInt(e.target.value));
   };
 
   return (
@@ -139,57 +154,31 @@ const MidiPlayer = ({ midiJsonData }) => {
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Volume (dB): {volume}
+              Volume: {volume}%
             </Form.Label>
             <Col sm="6">
               <Form.Range
-                min="-24"
-                max="6"
+                min="0"
+                max="100"
                 value={volume}
                 onChange={handleVolumeChange}
               />
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="6" className="text-white">
-              Attack Duration (s): {attackDuration}
-            </Form.Label>
-            <Col sm="6">
-              <Form.Range
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={attackDuration}
-                onChange={(e) => setAttackDuration(parseFloat(e.target.value))}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="6" className="text-white">
-              Release Duration (s): {releaseDuration}
-            </Form.Label>
-            <Col sm="6">
-              <Form.Range
-                min="0.1"
-                max="2"
-                step="0.1"
-                value={releaseDuration}
-                onChange={(e) => setReleaseDuration(parseFloat(e.target.value))}
-              />
-            </Col>
-          </Form.Group>
-
           <Row className="mt-4">
             <Col>
-              <Button onClick={playSound} disabled={!midiJsonData} variant="outline-light">
-                Play Sound
+              <Button 
+                onClick={playSound} 
+                variant={isPlaying ? "outline-secondary" : "outline-light"}
+                disabled={!midiJsonData}
+              >
+                {isPlaying ? "Pause" : "Play"}
               </Button>
             </Col>
             <Col>
               <Button onClick={stopSound} disabled={!midiJsonData} variant="outline-light">
-                Stop Sound
+                Stop
               </Button>
             </Col>
           </Row>
