@@ -25,7 +25,7 @@ const BaselineComposer = ({
     console.log("Starting MIDI generation...");
     
     var midi = new Midi();
-    const defaultBpm = 120; // You can set this to a desired value
+    const defaultBpm = 60; // You can set this to a desired value
     midi.header.setTempo(defaultBpm);
     midi.header.timeSignatures.push({
       measures: 4, // Default time signature (e.g., 4/4)
@@ -38,7 +38,7 @@ const BaselineComposer = ({
     const totalDuration = durationInSeconds * 60; // Convert minutes to seconds
     console.log(`Total duration set to ${totalDuration} seconds.`);
   
-    const noteDuration = attackInSec + decayInSec + sustainInSec; // Duration of the note (inhale)
+    const noteDuration = attackInSec + decayInSec; // Duration of the note (inhale)
     const restDuration = releaseInSec; // Duration of the rest (exhale)
 
     console.log(`Note and rest duration set to ${noteDuration} seconds each for a 1:1 inhale-exhale ratio.`);
@@ -55,6 +55,7 @@ const BaselineComposer = ({
   
       // Update currentTime to include the note and the rest period
       currentTime += noteDuration + restDuration;
+      console.log(currentTime);
     }
   
     console.log("MIDI generation completed.");
@@ -138,12 +139,12 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Sustain Level (Seconds): {sustainInSec}
+              Sustain Level (Percentage): {sustainInSec}
             </Form.Label>
             <Col sm="6">
               <Form.Range
                 min="0"
-                max="5"
+                max="1"
                 step="0.1"
                 value={sustainInSec}
                 onChange={(e) => setSustainInSec(parseFloat(e.target.value))}

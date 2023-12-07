@@ -59,15 +59,14 @@ const Player = ({
 
   const playMidi = (midiJson) => {
     try {
-      // Ensure these are numerical values
-      const attackTime = onAttackInSecChange;
-      const releaseTime = onReleaseInSecChange;
-  
+      // Ensure these are numerical values  
       synthRef.current.envelope.attackCurve = "linear";
       synthRef.current.envelope.releaseCurve = "linear";
 
-      //synthRef.current.envelope.attack = attackTime;
-      //synthRef.current.envelope.release = releaseTime;
+      synthRef.current.envelope.attack = onAttackInSecChange;
+      synthRef.current.envelope.decay = 0.1;
+      //synthRef.current.envelope.sustain = onSustainInSecChange,
+      synthRef.current.envelope.release = onReleaseInSecChange;
   
       const notes = midiJson.tracks.flatMap(track =>
         track.notes.map(note => ({
@@ -80,6 +79,7 @@ const Player = ({
   
       midiPartRef.current = new Tone.Part((time, note) => {
         synthRef.current.triggerAttackRelease(note.note, note.duration, time, note.velocity);
+        console.log("new note");
       }, notes);
   
       midiPartRef.current.loop = true;
@@ -112,8 +112,8 @@ const Player = ({
       setIsPlaying(false);
     }
   } catch (error) {
-    console.error("Error in playSound:", error);
-  }
+    console.error("Error in playSound:", error);
+  }
 };
 
   const stopSound = () => {

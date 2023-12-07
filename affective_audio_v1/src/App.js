@@ -4,6 +4,7 @@ import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Player from "./Player";
+import SimplePlayer from "./SimplePlayer";
 import MidiLoader from "./LoadMidi";
 import BaselineComposer from "./BaselineComposer";
 import SparkleComposer from "./SparkleComposer";
@@ -110,6 +111,7 @@ function App() {
           </Col>
         </Row>
       </Container>
+      <SimplePlayer midiJsonData={baselineData}/>
     </div>
   );
 }
