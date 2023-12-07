@@ -35,7 +35,7 @@ const MidiLoader = ({ onCompositionComplete }) => {
   const fileData = () => {
     if (file) {
       return (
-        <Card>
+        <Card bg="dark" text="white" className="mt-3">
           <Card.Body>
             <Card.Title>File Details:</Card.Title>
             <Card.Text>File Name: {file.name}</Card.Text>
@@ -57,7 +57,7 @@ const MidiLoader = ({ onCompositionComplete }) => {
             </Form.Group>
           </Col>
           <Col sm={2}>
-            <Button variant="primary" onClick={onFileUpload} disabled={!file}>Upload!</Button>
+            <Button variant="outline-light" onClick={onFileUpload} disabled={!file}>Upload!</Button>
           </Col>
         </Row>
       </Form>

@@ -62,9 +62,10 @@ function App() {
 
         <Row>
           <Col>
-            <BaselineComposer onMidiGenerated={setMidiData} />
+            <MidiLoader onCompositionComplete={handleCompositionComplete} />
           </Col>
         </Row>
+
 
         <Row className="my-3">
           <Col>
@@ -77,7 +78,7 @@ function App() {
 
         <Row>
           <Col>
-            <MidiLoader onCompositionComplete={handleCompositionComplete} />
+            <BaselineComposer onMidiGenerated={setMidiData} />
           </Col>
         </Row>
 
