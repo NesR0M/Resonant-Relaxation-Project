@@ -47,6 +47,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
   return (
     <Card bg="dark" text="white" className="mb-3">
       <Card.Body>
+        <Card.Title style={{ textAlign: 'left', fontWeight: 'bold' }}>Baseline Composer</Card.Title>
         <Form>
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
