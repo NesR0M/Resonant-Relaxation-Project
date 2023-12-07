@@ -16,6 +16,13 @@ function App() {
   const [error, setError] = useState(null);
   const [sparkleData, setSparkleData] = useState(null);
 
+  const [startFrequency, setStartFrequency] = useState(null);
+  const [durationInSeconds, setDurationInSeconds] = useState(null);
+  const [attackInSec, setAttackInSec] = useState(null);
+  const [decayInSec, setDecayInSec] = useState(null);
+  const [sustainInSec, setSustainInSec] = useState(null);
+  const [releaseInSec, setReleaseInSec] = useState(null);
+
   const resetData = () => {
     setBaselineData(null);
     setSparkleData(null);
@@ -82,7 +89,13 @@ function App() {
 
         <Row>
           <Col>
-            <BaselineComposer onMidiGenerated={setBaselineData} />
+            <BaselineComposer onMidiGenerated={setBaselineData}
+              onStartFrequencyChange={setStartFrequency}
+              onDurationInSecondsChange={setDurationInSeconds}
+              onAttackInSecChange={setAttackInSec}
+              onDecayInSecChange={setDecayInSec}
+              onSustainInSecChange={setSustainInSec}
+              onReleaseInSecChange={setReleaseInSec} />
           </Col>
         </Row>
 

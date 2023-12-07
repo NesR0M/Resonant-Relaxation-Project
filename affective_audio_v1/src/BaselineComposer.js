@@ -5,13 +5,21 @@ import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 
 import { createMidi } from './midiUtils';
 
-const BaselineComposer = ({ onMidiGenerated }) => {
+const BaselineComposer = ({ 
+  onMidiGenerated, 
+  onStartFrequencyChange, 
+  onDurationInSecondsChange, 
+  onAttackInSecChange, 
+  onDecayInSecChange, 
+  onSustainInSecChange, 
+  onReleaseInSecChange }) => {
+
   const [startFrequency, setStartFrequency] = useState(440); // Default frequency
   const [durationInSeconds, setDurationInSeconds] = useState(60); // Default duration
-  const [attackInSec, setAttackInSec] = useState(0.5);
-  const [decayInSec, setDecayInSec] = useState(0.5);
-  const [sustainInSec, setSustainInSec] = useState(0.5);
-  const [releaseInSec, setReleaseInSec] = useState(0.5);
+  const [attackInSec, setAttackInSec] = useState(2);
+  const [decayInSec, setDecayInSec] = useState(0);
+  const [sustainInSec, setSustainInSec] = useState(0);
+  const [releaseInSec, setReleaseInSec] = useState(2);
 
   const generateMidi = () => {
     console.log("Starting MIDI generation...");
@@ -30,8 +38,9 @@ const BaselineComposer = ({ onMidiGenerated }) => {
     const totalDuration = durationInSeconds * 60; // Convert minutes to seconds
     console.log(`Total duration set to ${totalDuration} seconds.`);
   
-    const noteDuration = attackInSec; // Duration of the note (inhale)
-    const restDuration = attackInSec; // Duration of the rest (exhale)
+    const noteDuration = attackInSec + decayInSec + sustainInSec; // Duration of the note (inhale)
+    const restDuration = releaseInSec; // Duration of the rest (exhale)
+
     console.log(`Note and rest duration set to ${noteDuration} seconds each for a 1:1 inhale-exhale ratio.`);
   
     while (currentTime < totalDuration) {
@@ -51,6 +60,14 @@ const BaselineComposer = ({ onMidiGenerated }) => {
   
     // Pass the generated MIDI data up
     onMidiGenerated(midi);
+
+    onStartFrequencyChange(startFrequency);
+    onDurationInSecondsChange(durationInSeconds);
+    onAttackInSecChange(attackInSec);
+    onDecayInSecChange(decayInSec);
+    onSustainInSecChange(sustainInSec);
+    onReleaseInSecChange(releaseInSec);
+
     createMidi(midi);
   };
     
