@@ -1,19 +1,18 @@
+.custom-container {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .App {
   text-align: center;
-  margin: 0 auto; /* Center the app on the page */
-  background-color: #282c34; /* Background color like App-header */
-  color: white; /* Text color for better readability */
-  min-height: 100vh; /* Full viewport height */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #282c34;
+  color: white;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-/* Responsive padding for larger screens */
-@media (min-width: 768px) {
-  .App {
-    padding: 40px;
-  }
 }
 
 .App-logo {
@@ -63,14 +62,4 @@ button, .form-control {
   background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent */
   border: none;
   color: white;
-}
-
-/* Adjustments for smaller screens */
-@media (max-width: 375px) {
-  .App {
-    padding: 10px; /* Reduced padding for small screens */
-  }
-  .App-logo {
-    height: 30vmin; /* Smaller logo for small screens */
-  }
 }

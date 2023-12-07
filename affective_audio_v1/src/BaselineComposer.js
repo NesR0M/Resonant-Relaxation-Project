@@ -42,13 +42,12 @@ const BaselineComposer = ({ onMidiGenerated }) => {
     onMidiGenerated(midi);
   };
     
-
   return (
-    <Card>
+    <Card bg="dark" text="white" className="mb-3">
       <Card.Body>
         <Form>
           <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="6">
+            <Form.Label column sm="6" className="text-white">
               Start Frequency (Hz): {startFrequency}
             </Form.Label>
             <Col sm="6">
@@ -62,7 +61,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
           </Form.Group>
 
           <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="6">
+            <Form.Label column sm="6" className="text-white">
               Duration (Minutes): {durationInMin}
             </Form.Label>
             <Col sm="6">
@@ -76,7 +75,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
           </Form.Group>
 
           <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="6">
+            <Form.Label column sm="6" className="text-white">
               Attack/Release Duration (Seconds): {attackInSec}
             </Form.Label>
             <Col sm="6">
@@ -89,7 +88,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
             </Col>
           </Form.Group>
 
-          <Button variant="primary" onClick={generateMidi}>Generate MIDI</Button>
+          <Button variant="outline-light" onClick={generateMidi}>Generate MIDI</Button>
         </Form>
       </Card.Body>
     </Card>

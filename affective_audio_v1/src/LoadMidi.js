@@ -51,12 +51,12 @@ const MidiLoader = ({ onCompositionComplete }) => {
     <div>
       <Form>
         <Row className="align-items-center">
-          <Col sm={9}>
+          <Col sm={10}>
             <Form.Group controlId="formFile" className="mb-3">
               <Form.Control type="file" onChange={onFileChange} accept=".mid,.midi" />
             </Form.Group>
           </Col>
-          <Col sm={3}>
+          <Col sm={2}>
             <Button variant="primary" onClick={onFileUpload} disabled={!file}>Upload!</Button>
           </Col>
         </Row>

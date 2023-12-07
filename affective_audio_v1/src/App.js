@@ -41,51 +41,53 @@ function App() {
   };
 
   return (
-    <Container className="App">
-      <Navbar variant="dark" className="mb-3">
-        <Container>
-          <Navbar.Brand href="#home">
-            <img
-              alt=""
-              src={logo}
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-            />{' '}
-            React MIDI Player
-          </Navbar.Brand>
-        </Container>
-      </Navbar>
+    <div className="App">
+      <Container>
+        <Navbar variant="dark" className="mb-3">
+          <Container>
+            <Navbar.Brand href="#home">
+              <img
+                alt=""
+                src={logo}
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+              />{' '}
+              React MIDI Player
+            </Navbar.Brand>
+          </Container>
+        </Navbar>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
 
-      <Row>
-        <Col>
-          <BaselineComposer onMidiGenerated={setMidiData} />
-        </Col>
-      </Row>
+        <Row>
+          <Col>
+            <BaselineComposer onMidiGenerated={setMidiData} />
+          </Col>
+        </Row>
 
-      <Row className="my-3">
-        <Col>
-          <Button variant="primary" onClick={loadExampleData}>Load example sound</Button>
-        </Col>
-        <Col>
-          <Button variant="danger" onClick={resetMidiData}>Delete sound data</Button>
-        </Col>
-      </Row>
+        <Row className="my-3">
+          <Col>
+            <Button variant="primary" onClick={loadExampleData}>Load example sound</Button>
+          </Col>
+          <Col>
+            <Button variant="danger" onClick={resetMidiData}>Delete sound data</Button>
+          </Col>
+        </Row>
 
-      <Row>
-        <Col>
-          <MidiLoader onCompositionComplete={handleCompositionComplete} />
-        </Col>
-      </Row>
+        <Row>
+          <Col>
+            <MidiLoader onCompositionComplete={handleCompositionComplete} />
+          </Col>
+        </Row>
 
-      <Row>
-        <Col>
-          <MidiPlayer midiJsonData={midiData} />
-        </Col>
-      </Row>
-    </Container>
+        <Row>
+          <Col>
+            <MidiPlayer midiJsonData={midiData} />
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
 
