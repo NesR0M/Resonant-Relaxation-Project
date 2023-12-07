@@ -1,126 +1,181 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import * as Tone from "tone";
-import { Waveform, Spectrogram } from 'react-audio-visualize';
 
 const MidiPlayer = ({ midiJsonData }) => {
-  // State variables for filter frequencies
-  const [lowPassFilterFreq, setLowPassFilterFreq] = useState(5000); // Default low-pass frequency
-  const [highPassFilterFreq, setHighPassFilterFreq] = useState(100); // Default high-pass frequency
+  // State variables
+  const [lowPassFilterFreq, setLowPassFilterFreq] = useState(500);
+  const [highPassFilterFreq, setHighPassFilterFreq] = useState(50);
+  const [volume, setVolume] = useState(-12);
+  const [attackDuration, setAttackDuration] = useState(0.5);
+  const [releaseDuration, setReleaseDuration] = useState(0.5);
 
+  // Refs for Tone.js objects
+  const synthRef = useRef(null);
+  const lowPassFilterRef = useRef(null);
+  const highPassFilterRef = useRef(null);
+  const volumeRef = useRef(null);
+  const midiPartRef = useRef(null);
 
-  // Initialize the synthesizer
-  const synth = new Tone.Synth({
-    oscillator: {
-      type: "sine", // Using a sine wave oscillator
-    },
-    // Additional configurations (like filters) can be added here
-  }).toDestination();
+  useEffect(() => {
+    // Initialize Tone.js objects
+    synthRef.current = new Tone.Synth().toDestination();
+    lowPassFilterRef.current = new Tone.Filter(lowPassFilterFreq, "lowpass").toDestination();
+    highPassFilterRef.current = new Tone.Filter(highPassFilterFreq, "highpass").toDestination();
+    volumeRef.current = new Tone.Volume(volume).toDestination();
 
-  // Filters initialization
-  const lowPassFilter = new Tone.Filter(
-    lowPassFilterFreq,
-    "lowpass"
-  ).toDestination();
-  const highPassFilter = new Tone.Filter(
-    highPassFilterFreq,
-    "highpass"
-  ).toDestination();
+    // Chain connections
+    synthRef.current.chain(
+      lowPassFilterRef.current,
+      highPassFilterRef.current,
+      volumeRef.current,
+      Tone.Destination
+    );
 
-  // Connect the synth to the filters
-  synth.chain(lowPassFilter, highPassFilter);
+    return () => {
+      // Dispose objects on unmount
+      synthRef.current.dispose();
+      lowPassFilterRef.current.dispose();
+      highPassFilterRef.current.dispose();
+      volumeRef.current.dispose();
+    };
+  }, []);
 
-  let midiPart;
-  let midiLoop;
+  useEffect(() => {
+    lowPassFilterRef.current.frequency.value = lowPassFilterFreq;
+    highPassFilterRef.current.frequency.value = highPassFilterFreq;
+  }, [lowPassFilterFreq, highPassFilterFreq]);
+
+  useEffect(() => {
+    volumeRef.current.volume.value = volume;
+  }, [volume]);
 
   // Function to play MIDI data
   const playMidi = (midiJson) => {
-    if (midiPart) {
-      midiPart.stop();
-      midiLoop.stop();
-    }
+    // Update synthesizer's envelope settings
+    try {
+      synthRef.current.envelope.attack = attackDuration;
+      synthRef.current.envelope.release = releaseDuration;
 
-    const notes = [];
-    midiJson.tracks.forEach((track) => {
-      track.notes.forEach((note) => {
-        notes.push({
+      const notes = midiJson.tracks.flatMap(track =>
+        track.notes.map(note => ({
           note: Tone.Frequency(note.midi, "midi").toNote(),
           time: note.time,
           duration: note.duration,
-          velocity: note.velocity,
-        });
-      });
-    });
+          velocity: note.velocity
+        }))
+      );
 
-    midiPart = new Tone.Part((time, value) => {
-      synth.triggerAttackRelease(value.note, value.duration, time, value.velocity);
-    }, notes);
+      midiPartRef.current = new Tone.Part((time, note) => {
+        synthRef.current.triggerAttackRelease(note.note, note.duration, time, note.velocity);
+      }, notes);
 
-    midiPart.loop = true;
-    midiPart.loopStart = 0;
-    midiPart.loopEnd = midiPart.length - 6; // Adjusted loopEnd slightly
+      midiPartRef.current.loop = true;
+      midiPartRef.current.loopStart = 0;
+      midiPartRef.current.loopEnd = '1m'; // 1 measure (adjust as needed)
 
-    midiLoop = new Tone.Loop(() => {
-      midiPart.start(0);
-    }, midiPart.length * notes.length);
-
-    Tone.Transport.start();
-    midiLoop.start(0);
+      Tone.Transport.start();
+      midiPartRef.current.start(0);
+    } catch (error) {
+      console.error("Error in playMidi:", error);
+    }
   };
 
-
-
   // Function to handle MIDI playback
-  const playSound = () => {
-    if (midiJsonData) {
-      playMidi(midiJsonData);
-    } else {
-      console.error("No MIDI composition available");
+  const playSound = async () => {
+    try {
+      if (midiJsonData) {
+        await Tone.start();
+        playMidi(midiJsonData);
+        console.log("MIDI started playing");
+      } else {
+        console.error("No MIDI composition available");
+      }
+    } catch (error) {
+      console.error("Error in playSound:", error);
     }
   };
 
   // Function to stop MIDI playback
   const stopSound = () => {
-    if (midiPart) {
-      midiPart.stop();
+    try {
+      if (midiPartRef.current) {
+        midiPartRef.current.stop();
+      }
+      Tone.Transport.stop();
+      Tone.Transport.position = 0;
+      console.log("MIDI Playback Stopped");
+    } catch (error) {
+      console.error("Error in stopSound:", error);
     }
-    Tone.Transport.stop();
-    Tone.Transport.position = 0;
   };
 
-  // useEffect hook for filter frequency updates
-  useEffect(() => {
-    lowPassFilter.frequency.value = lowPassFilterFreq;
-    highPassFilter.frequency.value = highPassFilterFreq;
-  }, [lowPassFilterFreq, highPassFilterFreq, lowPassFilter, highPassFilter]);
-
-  // useEffect hook for component lifecycle management
-  useEffect(() => {
-    return () => {
-      Tone.Transport.stop();
-      synth.dispose();
-    };
-  }, [synth]);
+  // Function to handle volume changes
+  const handleVolumeChange = (e) => {
+    setVolume(parseFloat(e.target.value));
+  };
 
   // Render method for the component
   return (
     <div>
       <div>
         <label>
-          Low-pass Filter Frequency:
+          Low-pass Filter Frequency (Hz): {lowPassFilterFreq}
           <input
-            type="number"
+            type="range"
+            min="20"
+            max="1000"
             value={lowPassFilterFreq}
-            onChange={(e) => setLowPassFilterFreq(e.target.value)}
+            onChange={(e) => setLowPassFilterFreq(parseInt(e.target.value))}
           />
         </label>
       </div>
       <div>
         <label>
-          High-pass Filter Frequency:
+          High-pass Filter Frequency (Hz): {highPassFilterFreq}
           <input
-            type="number"
+            type="range"
+            min="10"
+            max="200"
             value={highPassFilterFreq}
-            onChange={(e) => setHighPassFilterFreq(e.target.value)}
+            onChange={(e) => setHighPassFilterFreq(parseInt(e.target.value))}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Volume (dB): {volume}
+          <input
+            type="range"
+            min="-24"
+            max="6"
+            value={volume}
+            onChange={handleVolumeChange}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Attack Duration (s): {attackDuration}
+          <input
+            type="range"
+            min="0.1"
+            max="2"
+            step="0.1"
+            value={attackDuration}
+            onChange={(e) => setAttackDuration(parseFloat(e.target.value))}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Release Duration (s): {releaseDuration}
+          <input
+            type="range"
+            min="0.1"
+            max="2"
+            step="0.1"
+            value={releaseDuration}
+            onChange={(e) => setReleaseDuration(parseFloat(e.target.value))}
           />
         </label>
       </div>

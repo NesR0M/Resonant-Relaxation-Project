@@ -11,18 +11,22 @@ const MidiLoader = ({ onCompositionComplete }) => {
   const onFileUpload = async () => {
     if (file) {
       const reader = new FileReader();
-
+  
       reader.onload = (e) => {
-        const midiData = new Uint8Array(e.target.result);
-        const midi = new Midi(midiData);
-
-        // Convert the MIDI object to JSON
-        const toneJson = midi.toJSON();
-
-        onCompositionComplete(toneJson);
-        console.log(toneJson);
+        try {
+          const midiData = new Uint8Array(e.target.result);
+          const midi = new Midi(midiData);
+          const toneJson = midi.toJSON();
+          onCompositionComplete(toneJson);
+        } catch (error) {
+          console.error("Error processing MIDI file:", error);
+        }
       };
-
+  
+      reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+      };
+  
       reader.readAsArrayBuffer(file);
     }
   };
