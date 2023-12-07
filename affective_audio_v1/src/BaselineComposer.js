@@ -4,10 +4,12 @@ import * as Tone from "tone";
 import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 
 const BaselineComposer = ({ onMidiGenerated }) => {
-  const [startFrequency, setStartFrequency] = useState(440);
-  const [durationInMin, setDurationInMin] = useState(2);
-  const [attackInSec, setAttackInSec] = useState(3);
-  const [releaseInSec, setReleaseInSec] = useState(3);
+  const [startFrequency, setStartFrequency] = useState(440); // Default frequency
+  const [durationInSeconds, setDurationInSeconds] = useState(60); // Default duration
+  const [attackInSec, setAttackInSec] = useState(0.5);
+  const [decayInSec, setDecayInSec] = useState(0.5);
+  const [sustainInSec, setSustainInSec] = useState(0.5);
+  const [releaseInSec, setReleaseInSec] = useState(0.5);
 
   const generateMidi = () => {
     console.log("Starting MIDI generation...");
@@ -16,7 +18,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
     const track = midi.addTrack();
     
     let currentTime = 0;
-    const totalDuration = durationInMin * 60; // Convert minutes to seconds
+    const totalDuration = durationInSeconds * 60; // Convert minutes to seconds
     console.log(`Total duration set to ${totalDuration} seconds.`);
   
     const noteDuration = attackInSec; // Duration of the note (inhale)
@@ -53,7 +55,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
             <Col sm="6">
               <Form.Range
                 min="20"
-                max="2000"
+                max="600"
                 value={startFrequency}
                 onChange={(e) => setStartFrequency(+e.target.value)}
               />
@@ -62,28 +64,74 @@ const BaselineComposer = ({ onMidiGenerated }) => {
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Duration (Minutes): {durationInMin}
+              Duration (Seconds): {durationInSeconds}
             </Form.Label>
             <Col sm="6">
               <Form.Range
                 min="1"
-                max="10"
-                value={durationInMin}
-                onChange={(e) => setDurationInMin(+e.target.value)}
+                max="120"
+                value={durationInSeconds}
+                onChange={(e) => setDurationInSeconds(+e.target.value)}
               />
             </Col>
           </Form.Group>
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Attack/Release Duration (Seconds): {attackInSec}
+              Attack Duration (Seconds): {attackInSec}
             </Form.Label>
             <Col sm="6">
               <Form.Range
-                min="1"
-                max="10"
+                min="0"
+                max="5"
+                step="0.1"
                 value={attackInSec}
-                onChange={(e) => setAttackInSec(+e.target.value)}
+                onChange={(e) => setAttackInSec(parseFloat(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Decay Duration (Seconds): {decayInSec}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="0"
+                max="5"
+                step="0.1"
+                value={decayInSec}
+                onChange={(e) => setDecayInSec(parseFloat(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Sustain Level (Percentage): {sustainInSec}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="0"
+                max="5"
+                step="0.1"
+                value={sustainInSec}
+                onChange={(e) => setSustainInSec(parseFloat(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Release Duration (Seconds): {releaseInSec}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="0"
+                max="5"
+                step="0.1"
+                value={releaseInSec}
+                onChange={(e) => setReleaseInSec(parseFloat(e.target.value))}
               />
             </Col>
           </Form.Group>
