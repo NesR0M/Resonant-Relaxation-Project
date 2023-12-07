@@ -3,6 +3,8 @@ import { Midi } from '@tonejs/midi';
 import * as Tone from "tone";
 import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 
+import { createMidi } from './midiUtils';
+
 const BaselineComposer = ({ onMidiGenerated }) => {
   const [startFrequency, setStartFrequency] = useState(440); // Default frequency
   const [durationInSeconds, setDurationInSeconds] = useState(60); // Default duration
@@ -15,6 +17,13 @@ const BaselineComposer = ({ onMidiGenerated }) => {
     console.log("Starting MIDI generation...");
     
     var midi = new Midi();
+    const defaultBpm = 120; // You can set this to a desired value
+    midi.header.setTempo(defaultBpm);
+    midi.header.timeSignatures.push({
+      measures: 4, // Default time signature (e.g., 4/4)
+      timeSignature: [4, 4],
+      ticks: 0
+    });
     const track = midi.addTrack();
     
     let currentTime = 0;
@@ -42,6 +51,7 @@ const BaselineComposer = ({ onMidiGenerated }) => {
   
     // Pass the generated MIDI data up
     onMidiGenerated(midi);
+    createMidi(midi);
   };
     
   return (
