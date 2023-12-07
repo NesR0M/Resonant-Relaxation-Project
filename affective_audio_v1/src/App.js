@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
 import MidiPlayer from "./Player";
 import BaselineComposer from "./BaselineComposer"; // Import BaselineComposer
 import { notationExample } from "./prompts";
 import MidiLoader from "./LoadMidi";
+import { Container, Row, Col, Button, Navbar, Alert } from 'react-bootstrap';
 
 function App() {
   const [midiData, setMidiData] = useState(null);
@@ -30,8 +32,6 @@ function App() {
 
   const handleCompositionComplete = (jsonData) => {
     try {
-      // Assuming jsonData should be a valid JSON object/string
-      // Add any necessary validation or parsing here if jsonData is a string
       setMidiData(jsonData);
       console.log("MIDI Data:", jsonData);
     } catch (e) {
@@ -41,20 +41,51 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        {error && <div className="error">{error}</div>}
-        <BaselineComposer onMidiGenerated={setMidiData} /> {/* Using BaselineComposer */}
-        <button onClick={loadExampleData}>Load example sound</button>
-        <button onClick={resetMidiData}>Delete sound data</button>
-        <MidiLoader onCompositionComplete={handleCompositionComplete} />
-        <MidiPlayer midiJsonData={midiData} />
-      </header>
-    </div>
+    <Container className="App">
+      <Navbar variant="dark" className="mb-3">
+        <Container>
+          <Navbar.Brand href="#home">
+            <img
+              alt=""
+              src={logo}
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+            />{' '}
+            React MIDI Player
+          </Navbar.Brand>
+        </Container>
+      </Navbar>
+
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      <Row>
+        <Col>
+          <BaselineComposer onMidiGenerated={setMidiData} />
+        </Col>
+      </Row>
+
+      <Row className="my-3">
+        <Col>
+          <Button variant="primary" onClick={loadExampleData}>Load example sound</Button>
+        </Col>
+        <Col>
+          <Button variant="danger" onClick={resetMidiData}>Delete sound data</Button>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <MidiLoader onCompositionComplete={handleCompositionComplete} />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <MidiPlayer midiJsonData={midiData} />
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

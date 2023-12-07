@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import * as Tone from "tone";
+import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 
 const MidiPlayer = ({ midiJsonData }) => {
   // State variables
@@ -116,76 +117,98 @@ const MidiPlayer = ({ midiJsonData }) => {
 
   // Render method for the component
   return (
-    <div>
-      <div>
-        <label>
-          Low-pass Filter Frequency (Hz): {lowPassFilterFreq}
-          <input
-            type="range"
-            min="20"
-            max="1000"
-            value={lowPassFilterFreq}
-            onChange={(e) => setLowPassFilterFreq(parseInt(e.target.value))}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          High-pass Filter Frequency (Hz): {highPassFilterFreq}
-          <input
-            type="range"
-            min="10"
-            max="200"
-            value={highPassFilterFreq}
-            onChange={(e) => setHighPassFilterFreq(parseInt(e.target.value))}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Volume (dB): {volume}
-          <input
-            type="range"
-            min="-24"
-            max="6"
-            value={volume}
-            onChange={handleVolumeChange}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Attack Duration (s): {attackDuration}
-          <input
-            type="range"
-            min="0.1"
-            max="2"
-            step="0.1"
-            value={attackDuration}
-            onChange={(e) => setAttackDuration(parseFloat(e.target.value))}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Release Duration (s): {releaseDuration}
-          <input
-            type="range"
-            min="0.1"
-            max="2"
-            step="0.1"
-            value={releaseDuration}
-            onChange={(e) => setReleaseDuration(parseFloat(e.target.value))}
-          />
-        </label>
-      </div>
-      <button onClick={playSound} disabled={!midiJsonData}>
-        Play sound
-      </button>
-      <button onClick={stopSound} disabled={!midiJsonData}>
-        Stop sound
-      </button>
-    </div>
+    <Container>
+      <Card>
+        <Card.Body>
+          <Form>
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="6">
+                Low-pass Filter Frequency (Hz): {lowPassFilterFreq}
+              </Form.Label>
+              <Col sm="6">
+                <Form.Range
+                  min="20"
+                  max="1000"
+                  value={lowPassFilterFreq}
+                  onChange={(e) => setLowPassFilterFreq(parseInt(e.target.value))}
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="6">
+                High-pass Filter Frequency (Hz): {highPassFilterFreq}
+              </Form.Label>
+              <Col sm="6">
+                <Form.Range
+                  min="10"
+                  max="200"
+                  value={highPassFilterFreq}
+                  onChange={(e) => setHighPassFilterFreq(parseInt(e.target.value))}
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="6">
+                Volume (dB): {volume}
+              </Form.Label>
+              <Col sm="6">
+                <Form.Range
+                  min="-24"
+                  max="6"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="6">
+                Attack Duration (s): {attackDuration}
+              </Form.Label>
+              <Col sm="6">
+                <Form.Range
+                  min="0.1"
+                  max="2"
+                  step="0.1"
+                  value={attackDuration}
+                  onChange={(e) => setAttackDuration(parseFloat(e.target.value))}
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="6">
+                Release Duration (s): {releaseDuration}
+              </Form.Label>
+              <Col sm="6">
+                <Form.Range
+                  min="0.1"
+                  max="2"
+                  step="0.1"
+                  value={releaseDuration}
+                  onChange={(e) => setReleaseDuration(parseFloat(e.target.value))}
+                />
+              </Col>
+            </Form.Group>
+
+            <Row className="mt-4">
+              <Col>
+                <Button onClick={playSound} disabled={!midiJsonData} variant="primary">
+                  Play Sound
+                </Button>
+              </Col>
+              <Col>
+                <Button onClick={stopSound} disabled={!midiJsonData} variant="secondary">
+                  Stop Sound
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

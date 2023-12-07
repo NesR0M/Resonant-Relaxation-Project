@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Midi } from '@tonejs/midi';
 import * as Tone from "tone";
+import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 
 const BaselineComposer = ({ onMidiGenerated }) => {
   const [startFrequency, setStartFrequency] = useState(440);
@@ -43,27 +44,55 @@ const BaselineComposer = ({ onMidiGenerated }) => {
     
 
   return (
-    <div>
-      <div>
-        <label>
-          Start Frequency (Hz): {startFrequency}
-          <input type="range" min="20" max="2000" value={startFrequency} onChange={(e) => setStartFrequency(+e.target.value)} />
-        </label>
-      </div>
-      <div>
-        <label>
-          Duration (Minutes): {durationInMin}
-          <input type="range" min="1" max="10" value={durationInMin} onChange={(e) => setDurationInMin(+e.target.value)} />
-        </label>
-      </div>
-      <div>
-        <label>
-          Attack/Release Duration (Seconds): {attackInSec}
-          <input type="range" min="1" max="10" value={attackInSec} onChange={(e) => setAttackInSec(+e.target.value)} />
-        </label>
-      </div>
-      <button onClick={generateMidi}>Generate MIDI</button>
-    </div>
+    <Card>
+      <Card.Body>
+        <Form>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6">
+              Start Frequency (Hz): {startFrequency}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="20"
+                max="2000"
+                value={startFrequency}
+                onChange={(e) => setStartFrequency(+e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6">
+              Duration (Minutes): {durationInMin}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="1"
+                max="10"
+                value={durationInMin}
+                onChange={(e) => setDurationInMin(+e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6">
+              Attack/Release Duration (Seconds): {attackInSec}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="1"
+                max="10"
+                value={attackInSec}
+                onChange={(e) => setAttackInSec(+e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+
+          <Button variant="primary" onClick={generateMidi}>Generate MIDI</Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

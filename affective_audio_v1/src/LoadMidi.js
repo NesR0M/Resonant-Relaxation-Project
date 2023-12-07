@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Midi } from "@tonejs/midi";
+import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 
 const MidiLoader = ({ onCompositionComplete }) => {
   const [file, setFile] = useState(null);
@@ -34,29 +35,32 @@ const MidiLoader = ({ onCompositionComplete }) => {
   const fileData = () => {
     if (file) {
       return (
-        <div>
-          <h6>File Details:</h6>
-          <p>File Name: {file.name}</p>
-          <p>File Type: {file.type}</p>
-          <p>Last Modified: {file.lastModifiedDate.toDateString()}</p>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <br />
-          <h6>Choose a MIDI file before pressing the upload button</h6>
-        </div>
+        <Card>
+          <Card.Body>
+            <Card.Title>File Details:</Card.Title>
+            <Card.Text>File Name: {file.name}</Card.Text>
+            <Card.Text>File Type: {file.type}</Card.Text>
+            <Card.Text>Last Modified: {file.lastModifiedDate.toDateString()}</Card.Text>
+          </Card.Body>
+        </Card>
       );
     }
   };
 
   return (
     <div>
-      <div>
-        <input type="file" onChange={onFileChange} accept=".mid,.midi" />
-        <button onClick={onFileUpload}>Upload!</button>
-      </div>
+      <Form>
+        <Row className="align-items-center">
+          <Col sm={9}>
+            <Form.Group controlId="formFile" className="mb-3">
+              <Form.Control type="file" onChange={onFileChange} accept=".mid,.midi" />
+            </Form.Group>
+          </Col>
+          <Col sm={3}>
+            <Button variant="primary" onClick={onFileUpload} disabled={!file}>Upload!</Button>
+          </Col>
+        </Row>
+      </Form>
       {fileData()}
     </div>
   );

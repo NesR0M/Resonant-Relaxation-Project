@@ -1,42 +1,40 @@
 import React, { useState } from 'react';
+import * as Tone from 'tone';
 
 function AudioGenerator() {
   const [relaxationTime, setRelaxationTime] = useState(1); // Limiting to short durations for testing
   const [modulatorFreq, setModulatorFreq] = useState(200); // A standard frequency for testing
   const [modulationReduction, setModulationReduction] = useState(40); // Example reduction
 
-  const handleGenerate = async () => {
+  const handleGenerateMidi = async () => {
     const relaxationTimeMinutes = parseFloat(relaxationTime);
     const modulatorFrequency = parseFloat(modulatorFreq);
     const modulationReductionPercent = parseFloat(modulationReduction);
 
-    // Simplifying the sample rate for performance
-    const sampleRate = 44100; // Lower sample rate for testing
-    const totalSeconds = Math.min(relaxationTimeMinutes, 1) * 60; // Limiting to max 1 minute
-    const totalSamples = totalSeconds * sampleRate;
+    // Assuming each note plays for a fixed duration
+    const noteDuration = '8n'; // Example duration, adjust as needed
+
+    // MIDI data generation logic based on your parameters
+    const midiData = [];
+    const totalSeconds = Math.min(relaxationTimeMinutes, 1) * 60;
     const reductionFactor = 1 - modulationReductionPercent / 100;
     const endModulatorFreq = modulatorFrequency * reductionFactor;
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)({
-      sampleRate: sampleRate,
+    for (let time = 0; time < totalSeconds; time += Tone.Time(noteDuration).toSeconds()) {
+      const frequency = linearInterpolate(modulatorFrequency, endModulatorFreq, time, totalSeconds);
+      const midiNote = Tone.Frequency(frequency).toMidi();
+      midiData.push({ time, note: midiNote, duration: noteDuration });
+    }
+
+    // Use Tone.js to play the generated MIDI data
+    const synth = new Tone.Synth().toDestination();
+    midiData.forEach(({ time, note, duration }) => {
+      synth.triggerAttackRelease(Tone.Frequency(note, 'midi'), duration, time);
     });
 
-    const myArrayBuffer = audioCtx.createBuffer(1, totalSamples, sampleRate);
-
-    console.log('Starting audio generation...');
-    for (let i = 0; i < myArrayBuffer.length; i++) {
-      const nowBuffering = myArrayBuffer.getChannelData(0);
-      const time = i / sampleRate;
-      const modulatorFreqAtTime = linearInterpolate(modulatorFrequency, endModulatorFreq, time, totalSeconds);
-      nowBuffering[i] = Math.sin(2 * Math.PI * modulatorFreqAtTime * time);
-    }
-    console.log('Audio generation completed.');
-
-    const source = audioCtx.createBufferSource();
-    source.buffer = myArrayBuffer;
-    source.connect(audioCtx.destination);
-    source.start();
-    console.log('Playback started.');
+    // Start audio context
+    await Tone.start();
+    console.log('MIDI playback started.');
   };
 
   function linearInterpolate(startValue, endValue, time, totalTime) {
@@ -63,7 +61,7 @@ function AudioGenerator() {
         onChange={(e) => setModulationReduction(e.target.value)}
         placeholder="Modulation Reduction Percentage"
       />
-      <button onClick={handleGenerate}>Generate and Play Audio</button>
+      <button onClick={handleGenerateMidi}>Generate and Play MIDI</button>
     </div>
   );
 }
