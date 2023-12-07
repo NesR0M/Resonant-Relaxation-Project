@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import * as Tone from "tone";
 import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 
-const MidiPlayer = ({ midiJsonData }) => {
+const Player = ({ midiJsonData }) => {
   const [lowPassFilterFreq, setLowPassFilterFreq] = useState(500);
   const [highPassFilterFreq, setHighPassFilterFreq] = useState(50);
   const [volume, setVolume] = useState(50); // Volume as a percentage
@@ -188,4 +188,4 @@ const MidiPlayer = ({ midiJsonData }) => {
   );
 };
 
-export default MidiPlayer;
+export default Player;

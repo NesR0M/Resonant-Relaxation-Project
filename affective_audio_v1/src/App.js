@@ -1,28 +1,33 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import MidiPlayer from "./Player";
-import BaselineComposer from "./BaselineComposer"; // Import BaselineComposer
-import { notationExample } from "./prompts";
+import Player from "./Player";
 import MidiLoader from "./LoadMidi";
+import BaselineComposer from "./BaselineComposer";
+import SparkleComposer from "./SparkleComposer";
+
 import { Container, Row, Col, Button, Navbar, Alert } from 'react-bootstrap';
+import { notationExample } from "./prompts";
 
 function App() {
-  const [midiData, setMidiData] = useState(null);
+  const [baselineData, setBaselineData] = useState(null);
   const [error, setError] = useState(null);
+  const [sparkleData, setSparkleData] = useState(null);
 
-  const resetMidiData = () => {
-    setMidiData(null);
+  const resetData = () => {
+    setBaselineData(null);
+    setSparkleData(null);
     setError(null);
-    console.log("midiData deleted.");
+    console.log("baselineData deleted.");
   };
 
+  //TODO load only baseline
   const loadExampleData = () => {
     try {
       const midiJson = JSON.parse(notationExample);
-      setMidiData(midiJson);
+      setBaselineData(midiJson);
       console.log("example loaded...");
     } catch (e) {
       setError("Error loading example data: " + e.message);
@@ -30,9 +35,9 @@ function App() {
     }
   };
 
-  const handleCompositionComplete = (jsonData) => {
+  const handleBaselineComposition = (jsonData) => {
     try {
-      setMidiData(jsonData);
+      setBaselineData(jsonData);
       console.log("MIDI Data:", jsonData);
     } catch (e) {
       setError("Error in composition completion: " + e.message);
@@ -62,29 +67,28 @@ function App() {
 
         <Row>
           <Col>
-            <MidiLoader onCompositionComplete={handleCompositionComplete} />
+            <MidiLoader onCompositionComplete={handleBaselineComposition} />
           </Col>
         </Row>
-
 
         <Row className="my-3">
           <Col>
             <Button variant="primary" onClick={loadExampleData}>Load example sound</Button>
           </Col>
           <Col>
-            <Button variant="danger" onClick={resetMidiData}>Delete sound data</Button>
+            <Button variant="danger" onClick={resetData}>Delete sound data</Button>
           </Col>
         </Row>
 
         <Row>
           <Col>
-            <BaselineComposer onMidiGenerated={setMidiData} />
+            <BaselineComposer onMidiGenerated={setBaselineData} />
           </Col>
         </Row>
 
         <Row>
           <Col>
-            <MidiPlayer midiJsonData={midiData} />
+            <Player midiJsonData={baselineData} />
           </Col>
         </Row>
       </Container>
