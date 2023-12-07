@@ -7,37 +7,34 @@ const SimplePlayer = ({ midiJsonData }) => {
   const midiPartRef = useRef(null);
 
   useEffect(() => {
-    // Create a synth with a customizable envelope
-    const synth = new Tone.Synth({
+    // Create a PolySynth with polyphony=1 and a customizable envelope
+    const polySynth = new Tone.PolySynth(Tone.Synth, {
+      voiceCount: 1,
       envelope: {
-        attack: 0.5, // Default attack time, will be dynamically adjusted
+        attack: 0.5, // Default attack time
         decay: 0.1,
         sustain: 0.3,
-        release: 0.5 // Default release time, will be dynamically adjusted
+        release: 0.5, // Default release time, will be dynamically adjusted
+        releaseCurve: "linear" // Set release curve to linear
       }
     }).toDestination();
 
     // Function to play the MIDI data
     const playMidi = (midiJson) => {
-      let previousEndTime = 0;
       const notes = midiJson.tracks.flatMap(track =>
-        track.notes.map(note => {
-          // Calculate the time until the next note starts
-          const endTime = note.time + note.duration;
-          let releaseTime = 0.1; // Default minimum release time
-
-          if (endTime < previousEndTime) {
-            // If overlapping notes, set the start time to be slightly after the previous note's end time
-            note.time = previousEndTime + 0.01;
+        track.notes.map((note, index, array) => {
+          // Calculate the release time based on the gap to the next note
+          let releaseTime = 0.5; // Default release time
+          if (index < array.length - 1) {
+            const nextNoteTime = array[index + 1].time;
+            releaseTime = Math.max(nextNoteTime - note.time - note.duration, 0.1); // Ensure minimum release time
           }
-          releaseTime = Math.max(endTime - previousEndTime, releaseTime);
-          previousEndTime = endTime;
 
           return {
             note: Tone.Frequency(note.midi, "midi").toNote(),
             time: note.time,
             duration: note.duration,
-            attackTime: note.duration,
+            attackTime: note.duration, // Attack time equal to note duration
             releaseTime: releaseTime
           };
         })
@@ -46,9 +43,8 @@ const SimplePlayer = ({ midiJsonData }) => {
       // Create a Tone.Part to schedule playback of the notes
       midiPartRef.current = new Tone.Part((time, note) => {
         // Adjust the attack and release times dynamically
-        synth.envelope.attack = note.attackTime;
-        synth.envelope.release = note.releaseTime;
-        synth.triggerAttackRelease(note.note, note.duration, time);
+        polySynth.set({ envelope: { attack: note.attackTime, release: note.releaseTime } });
+        polySynth.triggerAttackRelease(note.note, note.duration, time);
       }, notes);
 
       // Start playback
@@ -66,7 +62,7 @@ const SimplePlayer = ({ midiJsonData }) => {
       if (midiPartRef.current) {
         midiPartRef.current.dispose();
       }
-      synth.dispose();
+      polySynth.dispose();
     };
   }, [midiJsonData]);
 
