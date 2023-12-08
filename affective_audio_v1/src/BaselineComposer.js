@@ -6,7 +6,7 @@ import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 import { createMidi } from './midiUtils';
 
 const BaselineComposer = ({ 
-  onMidiGenerated, 
+  onBaselineGenerated,
   onStartFrequencyChange, 
   onDurationInSecondsChange, 
   onAttackInSecChange, 
@@ -61,7 +61,7 @@ const BaselineComposer = ({
     console.log("MIDI generation completed.");
   
     // Pass the generated MIDI data up
-    onMidiGenerated(midi);
+    onBaselineGenerated(midi);
     console.log(midi);
 
     onStartFrequencyChange(startFrequency);
@@ -167,7 +167,7 @@ const BaselineComposer = ({
             </Col>
           </Form.Group>
 
-          <Button variant="outline-light" onClick={generateMidi}>Generate MIDI</Button>
+          <Button variant="outline-light" onClick={generateMidi}>Generate Baseline</Button>
         </Form>
       </Card.Body>
     </Card>

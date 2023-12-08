@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import { Button, Card } from 'react-bootstrap';
 
-const SimplePlayer = ({ midiJsonData }) => {
+const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const midiPartRef = useRef(null);
 
@@ -53,8 +53,8 @@ const SimplePlayer = ({ midiJsonData }) => {
     };
 
     // If there's MIDI data, play it
-    if (midiJsonData) {
-      playMidi(midiJsonData);
+    if (baselineJsonData) {
+      playMidi(baselineJsonData);
     }
 
     // Cleanup
@@ -64,11 +64,11 @@ const SimplePlayer = ({ midiJsonData }) => {
       }
       polySynth.dispose();
     };
-  }, [midiJsonData]);
+  }, [baselineJsonData]);
 
   // Function to toggle playback
   const togglePlayback = async () => {
-    if (!isPlaying && midiJsonData) {
+    if (!isPlaying && baselineJsonData) {
       await Tone.start();
       Tone.Transport.start();
       midiPartRef.current.start(0);

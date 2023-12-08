@@ -3,6 +3,8 @@ import OpenAI from "openai";
 import { prompt } from "./prompts";
 import { createMidi } from './midiUtils';
 
+import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+
 // Initialize OpenAI only if the API key is available
 let openai;
 if (process.env.REACT_APP_OPENAI_KEY) {
@@ -14,7 +16,7 @@ if (process.env.REACT_APP_OPENAI_KEY) {
   console.error("OpenAI API key is not defined.");
 }
 
-const MidiComposer = ({ onCompositionComplete }) => {
+const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
   const cleanGPTOutput = (inputString) => {
     let startIndex = inputString.indexOf("{");
     let braceCount = 0;
@@ -80,7 +82,7 @@ const MidiComposer = ({ onCompositionComplete }) => {
 
       try {
         const midiJsonData = JSON.parse(composition);
-        onCompositionComplete(midiJsonData);
+        sparklesJsonData(midiJsonData);
         createMidi(midiJsonData);
       } catch (jsonError) {
         console.error("Error parsing JSON data: ", jsonError);
@@ -92,10 +94,15 @@ const MidiComposer = ({ onCompositionComplete }) => {
   };
 
   return (
-    <div>
-      <button onClick={composeGPT}>Generate sound</button>
-    </div>
+    <Card bg="dark" text="white" className="mb-3">
+      <Card.Body>
+        <Card.Title style={{ textAlign: 'left', fontWeight: 'bold' }}>sparklesJsonData Composer</Card.Title>
+        <Form>
+          <Button variant="outline-light" onClick={composeGPT}>Generate sparklesJsonData</Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 
-export default MidiComposer;
+export default SparkleComposer;

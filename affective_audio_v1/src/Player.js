@@ -3,7 +3,7 @@ import * as Tone from "tone";
 import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 
 const Player = ({ 
-  midiJsonData, 
+  baselineJsonData, 
   onAttackInSecChange,
   onDecayInSecChange,
   onSustainInSecChange,
@@ -97,10 +97,10 @@ const Player = ({
   const playSound = async () => {
   try {
     if (!isPlaying) {
-      if (midiJsonData) {
+      if (baselineJsonData) {
         await Tone.start();
         if (Tone.Transport.state !== "started") {
-          playMidi(midiJsonData);
+          playMidi(baselineJsonData);
         } else {
           Tone.Transport.start();
         }
@@ -184,13 +184,13 @@ const Player = ({
               <Button 
                 onClick={playSound} 
                 variant={isPlaying ? "outline-secondary" : "outline-light"}
-                disabled={!midiJsonData}
+                disabled={!baselineJsonData}
               >
                 {isPlaying ? "Pause" : "Play"}
               </Button>
             </Col>
             <Col>
-              <Button onClick={stopSound} disabled={!midiJsonData} variant="outline-light">
+              <Button onClick={stopSound} disabled={!baselineJsonData} variant="outline-light">
                 Stop
               </Button>
             </Col>

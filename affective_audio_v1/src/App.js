@@ -15,7 +15,7 @@ import { notationExample } from "./prompts";
 function App() {
   const [baselineData, setBaselineData] = useState(null);
   const [error, setError] = useState(null);
-  const [sparkleData, setSparkleData] = useState(null);
+  const [sparklesData, setSparklesData] = useState(null);
 
   const [startFrequency, setStartFrequency] = useState(null);
   const [durationInSeconds, setDurationInSeconds] = useState(null);
@@ -26,13 +26,13 @@ function App() {
 
   const resetData = () => {
     setBaselineData(null);
-    setSparkleData(null);
+    setSparklesData(null);
     setError(null);
     console.log("baselineData deleted.");
   };
 
   //TODO load only baseline
-  const loadExampleData = () => {
+  const loadExampleBaselineData = () => {
     try {
       const midiJson = JSON.parse(notationExample);
       setBaselineData(midiJson);
@@ -43,13 +43,34 @@ function App() {
     }
   };
 
+  const loadExampleSparklesData = () => {
+    try {
+      const midiJson = JSON.parse(notationExample);
+      setSparklesData(midiJson);
+      console.log("example loaded...");
+    } catch (e) {
+      setError("Error loading example data: " + e.message);
+      console.error("Error loading example data:", e);
+    }
+  };
+
   const handleBaselineComposition = (jsonData) => {
     try {
       setBaselineData(jsonData);
-      console.log("MIDI Data:", jsonData);
+      console.log("Baseline Data:", jsonData);
     } catch (e) {
-      setError("Error in composition completion: " + e.message);
-      console.error("Error in composition completion:", e);
+      setError("Error in baseline composition completion: " + e.message);
+      console.error("Error in baseline composition completion:", e);
+    }
+  };
+
+  const handleSparklesComposition = (jsonData) => {
+    try {
+      setSparklesData(jsonData);
+      console.log("Sparkles Data:", jsonData);
+    } catch (e) {
+      setError("Error in sparkles composition completion: " + e.message);
+      console.error("Error in sparkles composition completion:", e);
     }
   };
 
@@ -81,7 +102,7 @@ function App() {
 
         <Row className="my-3">
           <Col>
-            <Button variant="primary" onClick={loadExampleData}>Load example sound</Button>
+            <Button variant="primary" onClick={loadExampleBaselineData}>Load example sound</Button>
           </Col>
           <Col>
             <Button variant="danger" onClick={resetData}>Delete sound data</Button>
@@ -90,7 +111,7 @@ function App() {
 
         <Row>
           <Col>
-            <BaselineComposer onMidiGenerated={setBaselineData}
+            <BaselineComposer onBaselineGenerated={handleBaselineComposition}
               onStartFrequencyChange={setStartFrequency}
               onDurationInSecondsChange={setDurationInSeconds}
               onAttackInSecChange={setAttackInSec}
@@ -102,7 +123,14 @@ function App() {
 
         <Row>
           <Col>
-            <Player midiJsonData={baselineData}
+            <SparkleComposer baselineJsonData={baselineData} sparklesJsonData={handleSparklesComposition}/>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Player baselineJsonData={baselineData}
+            sparklesJsonData={sparklesData}
             onAttackInSecChange={attackInSec}
             onDecayInSecChange={decayInSec}
             onSustainInSecChange={sustainInSec}
@@ -111,7 +139,9 @@ function App() {
           </Col>
         </Row>
       </Container>
-      <SimplePlayer midiJsonData={baselineData}/>
+      <SimplePlayer 
+      baselineJsonData={baselineData}
+      sparklesJsonData={sparklesData}/>
     </div>
   );
 }
