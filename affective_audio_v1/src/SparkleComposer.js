@@ -1,9 +1,9 @@
 import React from "react";
 import OpenAI from "openai";
-import { prompt3 } from "./prompts";
-import { createMidi } from './midiUtils';
+import { notationExample, prompt3 } from "./prompts";
+import { createMidi } from "./midiUtils";
 
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import { Form, Button, Card, Row, Col } from "react-bootstrap";
 
 // Initialize OpenAI only if the API key is available
 let openai;
@@ -54,13 +54,28 @@ const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
     }
 
     console.log("gpt is composing...");
+    let prompt;
+    if (baselineJsonData === null) {
+      prompt =
+        prompt3 +
+        "This is the baseline and you compose a melody to that:" +
+        notationExample +
+        "Give me only the MIDI File Syntax nothing else.";
+    } else {
+      prompt =
+        prompt3 +
+        "This is the baseline and you compose a melody to that:" +
+        baselineJsonData +
+        "Give me only the MIDI File Syntax nothing else.";
+    }
+
     try {
       let completion = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
             role: "user",
-            content: prompt3 + "This is the baseline and you compose a melody to that:" + baselineJsonData+ "Give me only the MIDI File Syntax nothing else.",
+            content: prompt,
           },
         ],
         temperature: 1,
@@ -87,7 +102,6 @@ const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
       } catch (jsonError) {
         console.error("Error parsing JSON data: ", jsonError);
       }
-
     } catch (error) {
       console.error("Error with OpenAI completion:", error);
     }
@@ -96,9 +110,13 @@ const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
   return (
     <Card bg="dark" text="white" className="mb-3">
       <Card.Body>
-        <Card.Title style={{ textAlign: 'left', fontWeight: 'bold' }}>sparklesJsonData Composer</Card.Title>
+        <Card.Title style={{ textAlign: "left", fontWeight: "bold" }}>
+          Sparkles Composer
+        </Card.Title>
         <Form>
-          <Button variant="outline-light" onClick={composeGPT}>Generate sparklesJsonData</Button>
+          <Button variant="outline-light" onClick={composeGPT}>
+            Generate sparklesJsonData
+          </Button>
         </Form>
       </Card.Body>
     </Card>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Player from "./Player";
 import SimplePlayer from "./SimplePlayer";
@@ -9,7 +9,7 @@ import MidiLoader from "./LoadMidi";
 import BaselineComposer from "./BaselineComposer";
 import SparkleComposer from "./SparkleComposer";
 
-import { Container, Row, Col, Button, Navbar, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Button, Navbar, Alert } from "react-bootstrap";
 import { notationExample, sparklesExample } from "./prompts";
 
 function App() {
@@ -36,7 +36,7 @@ function App() {
     try {
       const baselineMidiJson = JSON.parse(notationExample);
       const sparklesMidiJson = JSON.parse(sparklesExample);
-      
+
       setBaselineData(baselineMidiJson);
       setSparklesData(sparklesMidiJson);
 
@@ -79,7 +79,7 @@ function App() {
                 width="30"
                 height="30"
                 className="d-inline-block align-top"
-              />{' '}
+              />{" "}
               React MIDI Player
             </Navbar.Brand>
           </Container>
@@ -95,46 +95,62 @@ function App() {
 
         <Row className="my-3">
           <Col>
-            <Button variant="primary" onClick={loadExampleData}>Load example sounds</Button>
+            <Button variant="primary" onClick={loadExampleData}>
+              Load example sounds
+            </Button>
           </Col>
           <Col>
-            <Button variant="danger" onClick={resetData}>Delete sound data</Button>
+            <Button variant="danger" onClick={resetData}>
+              Delete sound data
+            </Button>
           </Col>
         </Row>
 
         <Row>
           <Col>
-            <BaselineComposer onBaselineGenerated={handleBaselineComposition}
+            <BaselineComposer
+              onBaselineGenerated={handleBaselineComposition}
               onStartFrequencyChange={setStartFrequency}
               onDurationInSecondsChange={setDurationInSeconds}
               onAttackInSecChange={setAttackInSec}
               onDecayInSecChange={setDecayInSec}
               onSustainInSecChange={setSustainInSec}
-              onReleaseInSecChange={setReleaseInSec} />
+              onReleaseInSecChange={setReleaseInSec}
+            />
           </Col>
         </Row>
 
         <Row>
           <Col>
-            <SparkleComposer baselineJsonData={baselineData} sparklesJsonData={handleSparklesComposition}/>
+            <SparkleComposer
+              baselineJsonData={baselineData}
+              sparklesJsonData={handleSparklesComposition}
+            />
           </Col>
         </Row>
 
         <Row>
           <Col>
-            <Player baselineJsonData={baselineData}
-            sparklesJsonData={sparklesData}
-            onAttackInSecChange={attackInSec}
-            onDecayInSecChange={decayInSec}
-            onSustainInSecChange={sustainInSec}
-            onReleaseInSecChange={releaseInSec}
-             />
+            <Player
+              baselineJsonData={baselineData}
+              sparklesJsonData={sparklesData}
+              onAttackInSecChange={attackInSec}
+              onDecayInSecChange={decayInSec}
+              onSustainInSecChange={sustainInSec}
+              onReleaseInSecChange={releaseInSec}
+            />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <SimplePlayer
+              baselineJsonData={baselineData}
+              sparklesJsonData={sparklesData}
+            />
           </Col>
         </Row>
       </Container>
-      <SimplePlayer 
-      baselineJsonData={baselineData}
-      sparklesJsonData={sparklesData}/>
     </div>
   );
 }
