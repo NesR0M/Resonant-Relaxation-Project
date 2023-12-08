@@ -408,19 +408,19 @@ export const notationExample = `{
 }`;
 
 export const prompt =
-  `I need assistance in producing AI-generated text that I convert to music using MIDI files to create haptic melodies optimized for whole-body vibration, focusing on frequencies between 25-60Hz as preferred by participants in the study. Structure the compositions as follows:
+  `I need assistance in producing AI-generated text that I convert to music using MIDI files to create haptic melodies optimized for whole-body vibration experiences, composing little interesting "sparkles". We are focusing on frequencies between 25-60Hz as a guiding frequency for our "sparkle", that will be played on top. Structure the compositions as follows:
 
-1. **Note Specification**: Represent each note as a tuple (pitch, duration). Use pitch values corresponding to frequencies in the 25-60Hz range, and durations reflecting musical timing.
-2. **Integration of Silence**: Include silences, denoted by a tuple with pitch 0 and duration signifying the silence length.
-3. **Musical Elements**:
-1. **Preferred Frequencies**: Both papers highlight a preference for specific frequency ranges. The first paper identifies 40-60 Hz as a pleasant range for tactile vibrations, while the second paper emphasizes 25-40 Hz as most preferred. These frequencies are crucial in creating a haptic melody that is perceived as pleasant and engaging.
-2. **Consonance and Dissonance**: The papers extend the concept of consonance and dissonance from music theory to vibrotactile stimuli. Consonant intervals (e.g., octave, perfect fifth) were generally preferred over dissonant ones (e.g., minor second). This suggests that haptic melodies should incorporate intervals and combinations that are harmonically pleasing and stable.
-3. **Individual Variability**: Despite general trends in frequency preferences, both papers note significant individual variation. This indicates that while certain frequencies and intervals may be broadly preferred, there is no one-size-fits-all solution. A range of frequencies and combinations might be necessary to cater to different preferences.
-4. **Rhythmic and Smooth Patterns**: The studies found a preference for rhythmic and smooth patterns in vibrotactile stimuli. This mirrors musical aesthetics where rhythm plays a crucial role in the structure and appeal of a piece.
-5. **Resonance and Neural Entrainment**: The concept of resonance, particularly neural resonance, is explored in the context of vibroacoustic therapy and aesthetic experience. This suggests that the frequencies and rhythms chosen for haptic melodies might also align with neural oscillation frequencies to enhance their therapeutic and relaxing effects.
-- **Pitch Range**: Emphasize pitches that align with frequencies found pleasant in vibrotactile studies.
-    - **Rhythm and Contour**: Develop rhythms and contours reflecting preferences for smooth, rhythmic patterns.
-    - **Consonance and Dissonance**: Apply principles of consonance and dissonance, favoring combinations like the octave (1:2) and perfect fifth (2:3). 4. **Output Format**: Present the melody in this format:` +
+  1. **Note Specification**: Represent each note as a tuple (pitch, duration). Use pitch values corresponding to frequencies in the 25-60Hz range, and durations reflecting musical timing.
+  2. **Integration of Silence**: Include silences, denoted by a tuple with pitch 0 and duration signifying the silence length.
+  3. **Musical Elements**:
+  1. **Preferred Frequencies**: 40-60 Hz are a pleasant range for tactile vibrations, while others argue for 25-40 Hz as most preferred. These frequencies are crucial in creating a haptic melody that is perceived as pleasant and engaging. The baseline that is provided should be within that range. Create in your MIDI harmonic elements for an audioscape corresponding to the baseline frequency for dissonance. 
+  2. **Consonance and Dissonance**: The papers extend the concept of consonance and dissonance from music theory to vibrotactile stimuli. Consonant intervals (e.g., octave, perfect fifth) were generally preferred over dissonant ones (e.g., minor second). This suggests that haptic melodies should incorporate intervals and combinations that are harmonically pleasing and stable.
+  3. **Individual Variability**: While certain frequencies and intervals may be broadly preferred, there is no one-size-fits-all solution. A range of frequencies and combinations might be necessary to cater to different preferences. Use the frequency provided in the baseline, which we will use as a harmonic basis for the user's preference.
+  4. **Rhythmic and Smooth Patterns**: Preferred are non intrusive, rhythmic and smooth patterns in vibrotactile stimuli. Those are typically characterized by slow attacks and releases. You can also play with the velocity and nuances like little rattle patterns. This mirrors musical aesthetics where rhythm plays a crucial role in the structure and appeal of a piece. For rhythmic and reoccuring pattern you also need noticable silence sometimes.
+  5. **Resonance and Neural Entrainment**: The concept of resonance, particularly neural resonance, is explored in the context of vibroacoustic therapy and aesthetic experience. This suggests that the frequencies and rhythms chosen for haptic melodies might also align with neural oscillation frequencies to enhance their therapeutic and relaxing effects.
+  - **Pitch Range**: Emphasize pitches that align with or build on frequencies found pleasant in vibrotactile studies.
+      - **Rhythm and Contour**: Develop rhythms and contours reflecting preferences for smooth, rhythmic patterns. Create slowly moving up and down pattern, comparable to fingerpicking a guitar slowly.
+      - **Consonance and Dissonance**: Apply principles of consonance and dissonance, favoring combinations like the octave (1:2) and perfect fifth (2:3). 4. **Output Format**: Present the melody in this format:` +
   longString +
   `
 5. **Individual Variability**: Recognize the variation in individual preferences for vibration frequencies.
