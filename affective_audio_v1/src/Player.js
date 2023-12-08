@@ -4,6 +4,7 @@ import { Row, Col, Form, Button, Card } from 'react-bootstrap';
 
 const Player = ({ 
   baselineJsonData, 
+  sparklesJsonData,
   onAttackInSecChange,
   onDecayInSecChange,
   onSustainInSecChange,

@@ -4,76 +4,83 @@ import { Button, Card } from 'react-bootstrap';
 
 const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const midiPartRef = useRef(null);
+  const baselinePartRef = useRef(null);
+  const sparklesPartRef = useRef(null);
 
   useEffect(() => {
-    // Create a PolySynth with polyphony=1 and a customizable envelope
-    const polySynth = new Tone.PolySynth(Tone.Synth, {
+    // Create a PolySynth for baseline with ADSR envelope
+    const baselineSynth = new Tone.PolySynth(Tone.Synth, {
       voiceCount: 1,
       envelope: {
-        attack: 0.5, // Default attack time
+        attack: 0.5,
         decay: 0.1,
         sustain: 0.3,
-        release: 0.5, // Default release time, will be dynamically adjusted
-        releaseCurve: "linear" // Set release curve to linear
+        release: 0.5,
+        releaseCurve: "linear"
       }
     }).toDestination();
 
-    // Function to play the MIDI data
-    const playMidi = (midiJson) => {
+    // Create a simple Synth for sparkles without ADSR adjustments
+    const sparklesSynth = new Tone.Synth().toDestination();
+
+    // Function to create Tone.Part for given MIDI data and synth
+    const createPart = (midiJson, synth, partRef) => {
       const notes = midiJson.tracks.flatMap(track =>
         track.notes.map((note, index, array) => {
-          // Calculate the release time based on the gap to the next note
-          let releaseTime = 0.5; // Default release time
+          let releaseTime = 0.5; 
           if (index < array.length - 1) {
             const nextNoteTime = array[index + 1].time;
-            releaseTime = Math.max(nextNoteTime - note.time - note.duration, 0.1); // Ensure minimum release time
+            releaseTime = Math.max(nextNoteTime - note.time - note.duration, 0.1);
           }
-
           return {
             note: Tone.Frequency(note.midi, "midi").toNote(),
             time: note.time,
             duration: note.duration,
-            attackTime: note.duration, // Attack time equal to note duration
+            attackTime: note.duration,
             releaseTime: releaseTime
           };
         })
       );
 
-      // Create a Tone.Part to schedule playback of the notes
-      midiPartRef.current = new Tone.Part((time, note) => {
-        // Adjust the attack and release times dynamically
-        polySynth.set({ envelope: { attack: note.attackTime, release: note.releaseTime } });
-        polySynth.triggerAttackRelease(note.note, note.duration, time);
+      partRef.current = new Tone.Part((time, note) => {
+        synth.set({ envelope: { attack: note.attackTime, release: note.releaseTime } });
+        synth.triggerAttackRelease(note.note, note.duration, time);
       }, notes);
-
-      // Start playback
-      Tone.Transport.start();
-      midiPartRef.current.start(0);
     };
 
-    // If there's MIDI data, play it
+    // Play baseline data if available
     if (baselineJsonData) {
-      playMidi(baselineJsonData);
+      createPart(baselineJsonData, baselineSynth, baselinePartRef);
+    }
+
+    // Play sparkles data if available
+    if (sparklesJsonData) {
+      createPart(sparklesJsonData, sparklesSynth, sparklesPartRef);
     }
 
     // Cleanup
     return () => {
-      if (midiPartRef.current) {
-        midiPartRef.current.dispose();
+      if (baselinePartRef.current) {
+        baselinePartRef.current.dispose();
       }
-      polySynth.dispose();
+      baselineSynth.dispose();
+      if (sparklesPartRef.current) {
+        sparklesPartRef.current.dispose();
+      }
+      sparklesSynth.dispose();
     };
-  }, [baselineJsonData]);
+  }, [baselineJsonData, sparklesJsonData]);
 
   // Function to toggle playback
   const togglePlayback = async () => {
-    if (!isPlaying && baselineJsonData) {
+    if (!isPlaying) {
       await Tone.start();
       Tone.Transport.start();
-      midiPartRef.current.start(0);
+      baselinePartRef.current?.start(0);
+      sparklesPartRef.current?.start(0);
     } else {
-      midiPartRef.current.stop();
+      baselinePartRef.current?.stop();
+      sparklesPartRef.current?.stop();
       Tone.Transport.pause();
     }
     setIsPlaying(!isPlaying);

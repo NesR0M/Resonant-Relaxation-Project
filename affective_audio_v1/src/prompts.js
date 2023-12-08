@@ -55,181 +55,7 @@ tracks: [
     },          
   }
 ]
-} here is a filled out example: "{
-"header": {
-  "keySignatures": [],
-  "meta": [],
-  "name": "",
-  "ppq": 240,
-  "tempos": [
-    {
-      "bpm": 120,
-      "ticks": 0
-    }
-  ],
-  "timeSignatures": [
-    {
-      "ticks": 0,
-      "timeSignature": [
-        4,
-        4
-      ],
-      "measures": 0
-    }
-  ]
-},
-"tracks": [
-  {
-    "channel": 0,
-    "controlChanges": {
-      "7": [
-        {
-          "number": 7,
-          "ticks": 0,
-          "time": 0,
-          "value": 1
-        }
-      ]
-    },
-    "pitchBends": [],
-    "instrument": {
-      "family": "bass",
-      "number": 33,
-      "name": "electric bass (finger)"
-    },
-    "name": "",
-    "notes": [
-      {
-        "duration": 0.26875,
-        "durationTicks": 129,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 0,
-        "time": 0,
-        "velocity": 0.6141732283464567
-      },
-      {
-        "duration": 0.2562500000000001,
-        "durationTicks": 123,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 360,
-        "time": 0.75,
-        "velocity": 0.6377952755905512
-      },
-      {
-        "duration": 0.26875000000000004,
-        "durationTicks": 129,
-        "midi": 50,
-        "name": "D3",
-        "ticks": 480,
-        "time": 1,
-        "velocity": 0.6220472440944882
-      },
-      {
-        "duration": 0.1333333333333333,
-        "durationTicks": 64,
-        "midi": 52,
-        "name": "E3",
-        "ticks": 600,
-        "time": 1.25,
-        "velocity": 0.5354330708661418
-      },
-      {
-        "duration": 0.7333333333333334,
-        "durationTicks": 352,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 840,
-        "time": 1.75,
-        "velocity": 0.6456692913385826
-      },
-      {
-        "duration": 0.4791666666666665,
-        "durationTicks": 230,
-        "midi": 43,
-        "name": "G2",
-        "ticks": 1200,
-        "time": 2.5,
-        "velocity": 0.4881889763779528
-      },
-      {
-        "duration": 0.28125,
-        "durationTicks": 135,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 1440,
-        "time": 3,
-        "velocity": 0.6299212598425197
-      },
-      {
-        "duration": 0.16041666666666643,
-        "durationTicks": 77,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 1920,
-        "time": 4,
-        "velocity": 0.6929133858267716
-      },
-      {
-        "duration": 0.16041666666666643,
-        "durationTicks": 77,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 2280,
-        "time": 4.75,
-        "velocity": 0.6062992125984252
-      },
-      {
-        "duration": 0.25416666666666643,
-        "durationTicks": 122,
-        "midi": 50,
-        "name": "D3",
-        "ticks": 2400,
-        "time": 5,
-        "velocity": 0.7086614173228346
-      },
-      {
-        "duration": 0.2020833333333334,
-        "durationTicks": 97,
-        "midi": 52,
-        "name": "E3",
-        "ticks": 2520,
-        "time": 5.25,
-        "velocity": 0.5905511811023622
-      },
-      {
-        "duration": 0.760416666666667,
-        "durationTicks": 365,
-        "midi": 45,
-        "name": "A2",
-        "ticks": 2760,
-        "time": 5.75,
-        "velocity": 0.5905511811023622
-      },
-      {
-        "duration": 0.47916666666666696,
-        "durationTicks": 230,
-        "midi": 48,
-        "name": "C3",
-        "ticks": 3120,
-        "time": 6.5,
-        "velocity": 0.6062992125984252
-      },
-      {
-          "duration": 0.1875,
-          "durationTicks": 90,
-          "midi": 45,
-          "name": "A2",
-          "ticks": 3360,
-          "time": 7,
-          "velocity": 0.6141732283464567
-        }
-    ],
-    "endOfTrackTicks": 3839
-}
-]
-}"`;
+}`;
 
 export const notationExample = `{
 "header": {
@@ -407,6 +233,182 @@ export const notationExample = `{
 ]
 }`;
 
+export const sparklesExample = `{
+  "header": {
+    "keySignatures": [],
+    "meta": [],
+    "name": "",
+    "ppq": 240,
+    "tempos": [
+      {
+        "bpm": 120,
+        "ticks": 0
+      }
+    ],
+    "timeSignatures": [
+      {
+        "ticks": 0,
+        "timeSignature": [
+          4,
+          4
+        ],
+        "measures": 0
+      }
+    ]
+  },
+  "tracks": [
+    {
+      "channel": 0,
+      "controlChanges": {
+        "7": [
+          {
+            "number": 7,
+            "ticks": 0,
+            "time": 0,
+            "value": 1
+          }
+        ]
+      },
+      "pitchBends": [],
+      "instrument": {
+        "family": "bass",
+        "number": 33,
+        "name": "electric bass (finger)"
+      },
+      "name": "",
+      "notes": [
+        {
+          "duration": 0.26875,
+          "durationTicks": 129,
+          "midi": 45,
+          "name": "A2",
+          "ticks": 0,
+          "time": 0,
+          "velocity": 0.6141732283464567
+        },
+        {
+          "duration": 0.2562500000000001,
+          "durationTicks": 123,
+          "midi": 48,
+          "name": "C3",
+          "ticks": 360,
+          "time": 0.75,
+          "velocity": 0.6377952755905512
+        },
+        {
+          "duration": 0.26875000000000004,
+          "durationTicks": 129,
+          "midi": 50,
+          "name": "D3",
+          "ticks": 480,
+          "time": 1,
+          "velocity": 0.6220472440944882
+        },
+        {
+          "duration": 0.1333333333333333,
+          "durationTicks": 64,
+          "midi": 52,
+          "name": "E3",
+          "ticks": 600,
+          "time": 1.25,
+          "velocity": 0.5354330708661418
+        },
+        {
+          "duration": 0.7333333333333334,
+          "durationTicks": 352,
+          "midi": 45,
+          "name": "A2",
+          "ticks": 840,
+          "time": 1.75,
+          "velocity": 0.6456692913385826
+        },
+        {
+          "duration": 0.4791666666666665,
+          "durationTicks": 230,
+          "midi": 43,
+          "name": "G2",
+          "ticks": 1200,
+          "time": 2.5,
+          "velocity": 0.4881889763779528
+        },
+        {
+          "duration": 0.28125,
+          "durationTicks": 135,
+          "midi": 45,
+          "name": "A2",
+          "ticks": 1440,
+          "time": 3,
+          "velocity": 0.6299212598425197
+        },
+        {
+          "duration": 0.16041666666666643,
+          "durationTicks": 77,
+          "midi": 45,
+          "name": "A2",
+          "ticks": 1920,
+          "time": 4,
+          "velocity": 0.6929133858267716
+        },
+        {
+          "duration": 0.16041666666666643,
+          "durationTicks": 77,
+          "midi": 48,
+          "name": "C3",
+          "ticks": 2280,
+          "time": 4.75,
+          "velocity": 0.6062992125984252
+        },
+        {
+          "duration": 0.25416666666666643,
+          "durationTicks": 122,
+          "midi": 50,
+          "name": "D3",
+          "ticks": 2400,
+          "time": 5,
+          "velocity": 0.7086614173228346
+        },
+        {
+          "duration": 0.2020833333333334,
+          "durationTicks": 97,
+          "midi": 52,
+          "name": "E3",
+          "ticks": 2520,
+          "time": 5.25,
+          "velocity": 0.5905511811023622
+        },
+        {
+          "duration": 0.760416666666667,
+          "durationTicks": 365,
+          "midi": 45,
+          "name": "A2",
+          "ticks": 2760,
+          "time": 5.75,
+          "velocity": 0.5905511811023622
+        },
+        {
+          "duration": 0.47916666666666696,
+          "durationTicks": 230,
+          "midi": 48,
+          "name": "C3",
+          "ticks": 3120,
+          "time": 6.5,
+          "velocity": 0.6062992125984252
+        },
+        {
+          "duration": 0.1875,
+          "durationTicks": 90,
+          "midi": 45,
+          "name": "A2",
+          "ticks": 3360,
+          "time": 7,
+          "velocity": 0.6141732283464567
+        }
+      ],
+      "endOfTrackTicks": 3839
+    }
+  ]
+}`
+
 export const prompt =
   `I need assistance in producing AI-generated text that I convert to music using MIDI files to create haptic melodies optimized for whole-body vibration experiences, composing little interesting "sparkles". We are focusing on frequencies between 25-60Hz as a guiding frequency for our "sparkle", that will be played on top. Structure the compositions as follows:
 
@@ -420,12 +422,13 @@ export const prompt =
   5. **Resonance and Neural Entrainment**: The concept of resonance, particularly neural resonance, is explored in the context of vibroacoustic therapy and aesthetic experience. This suggests that the frequencies and rhythms chosen for haptic melodies might also align with neural oscillation frequencies to enhance their therapeutic and relaxing effects.
   - **Pitch Range**: Emphasize pitches that align with or build on frequencies found pleasant in vibrotactile studies.
       - **Rhythm and Contour**: Develop rhythms and contours reflecting preferences for smooth, rhythmic patterns. Create slowly moving up and down pattern, comparable to fingerpicking a guitar slowly.
-      - **Consonance and Dissonance**: Apply principles of consonance and dissonance, favoring combinations like the octave (1:2) and perfect fifth (2:3). 4. **Output Format**: Present the melody in this format:` +
-  longString +
-  `
-5. **Individual Variability**: Recognize the variation in individual preferences for vibration frequencies.
+      - **Consonance and Dissonance**: Apply principles of consonance and dissonance, favoring combinations like the octave (1:2) and perfect fifth (2:3). 4. 
+  
+      
+6. **Individual Variability**: Recognize the variation in individual preferences for vibration frequencies.
 
-The goal is to create melodies that are not only musically coherent but also optimized for haptic feedback, based on empirical findings on vibrotactile feedback and human emotional response`;
+The goal is to create melodies that are not only musically coherent but also optimized for haptic feedback, based on empirical findings on vibrotactile feedback and human emotional response **Output Format**: Present the melody in this format:` +
+longString ;
 
 export const prompt2 = `Objective: Create a sound composition structured as a MIDI file with specific attributes and transformations. The composition is a relaxation waveform lasting for 5 minutes, incorporating frequency modulation and base tone changes.
 
@@ -482,3 +485,5 @@ Instructions:
 Use the provided MIDI file syntax to create a sound composition that matches the described semantic qualities.
 Implement the specific frequency transitions for both the modulator and carrier waves.
 Ensure the composition adheres to the duration, phase calculation, waveform generation, and normalization criteria outlined.`
+
+export const prompt3 = `Objective: Create a sound composition structured as a MIDI file with specific syntax:` + longString;

@@ -10,7 +10,7 @@ import BaselineComposer from "./BaselineComposer";
 import SparkleComposer from "./SparkleComposer";
 
 import { Container, Row, Col, Button, Navbar, Alert } from 'react-bootstrap';
-import { notationExample } from "./prompts";
+import { notationExample, sparklesExample } from "./prompts";
 
 function App() {
   const [baselineData, setBaselineData] = useState(null);
@@ -32,22 +32,15 @@ function App() {
   };
 
   //TODO load only baseline
-  const loadExampleBaselineData = () => {
+  const loadExampleData = () => {
     try {
-      const midiJson = JSON.parse(notationExample);
-      setBaselineData(midiJson);
-      console.log("example loaded...");
-    } catch (e) {
-      setError("Error loading example data: " + e.message);
-      console.error("Error loading example data:", e);
-    }
-  };
+      const baselineMidiJson = JSON.parse(notationExample);
+      const sparklesMidiJson = JSON.parse(sparklesExample);
+      
+      setBaselineData(baselineMidiJson);
+      setSparklesData(sparklesMidiJson);
 
-  const loadExampleSparklesData = () => {
-    try {
-      const midiJson = JSON.parse(notationExample);
-      setSparklesData(midiJson);
-      console.log("example loaded...");
+      console.log("examples loaded...");
     } catch (e) {
       setError("Error loading example data: " + e.message);
       console.error("Error loading example data:", e);
@@ -102,7 +95,7 @@ function App() {
 
         <Row className="my-3">
           <Col>
-            <Button variant="primary" onClick={loadExampleBaselineData}>Load example sound</Button>
+            <Button variant="primary" onClick={loadExampleData}>Load example sounds</Button>
           </Col>
           <Col>
             <Button variant="danger" onClick={resetData}>Delete sound data</Button>
