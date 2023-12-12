@@ -9,7 +9,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
 
   useEffect(() => {
     // Create a PolySynth for baseline with ADSR envelope
-    const baselineSynth = new Tone.PolySynth(Tone.Synth, {
+    const baselineSynth = new Tone.MonoSynth(Tone.Synth, {
       voiceCount: 1,
       envelope: {
         attack: 0.5,

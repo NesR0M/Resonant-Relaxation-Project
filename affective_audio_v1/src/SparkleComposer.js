@@ -1,6 +1,6 @@
 import React from "react";
 import OpenAI from "openai";
-import { notationExample, prompt3 } from "./prompts";
+import { notationExample, prompt4 } from "./prompts";
 import { createMidi } from "./midiUtils";
 
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
@@ -57,13 +57,13 @@ const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
     let prompt;
     if (baselineJsonData === null) {
       prompt =
-        prompt3 +
+        prompt4 +
         "This is the baseline and you compose a melody to that:" +
         notationExample +
         "Give me only the MIDI File Syntax nothing else.";
     } else {
       prompt =
-        prompt3 +
+        prompt4 +
         "This is the baseline and you compose a melody to that:" +
         baselineJsonData +
         "Give me only the MIDI File Syntax nothing else.";

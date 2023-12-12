@@ -23,7 +23,7 @@ const Player = ({
   const midiPartRef = useRef(null);
 
   useEffect(() => {
-    synthRef.current = new Tone.Synth().toDestination();
+    synthRef.current = new Tone.MonoSynth().toDestination();
     lowPassFilterRef.current = new Tone.Filter(lowPassFilterFreq, "lowpass").toDestination();
     highPassFilterRef.current = new Tone.Filter(highPassFilterFreq, "highpass").toDestination();
     volumeRef.current = new Tone.Volume(percentToDecibels(volume)).toDestination();
