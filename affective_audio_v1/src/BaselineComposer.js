@@ -87,6 +87,9 @@ const BaselineComposer = ({
     onBaselineGenerated(midi);
     console.log(midi);
 
+    onStartFrequencyChange(startFrequency);
+    onDurationInSecondsChange(durationInSeconds);
+
     createMidi(midi);
   };
 
