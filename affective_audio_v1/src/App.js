@@ -65,10 +65,12 @@ function App() {
 
         <Row>
           <Col>
-            <MidiLoader
-              onBaselineCompositionComplete={handleBaselineComposition}
-              onSparklesCompositionComplete={handleSparklesComposition}
-            />
+          <MidiLoader
+            onBaselineCompositionComplete={handleBaselineComposition}
+            onSparklesCompositionComplete={handleSparklesComposition}
+            setBaselineData={setBaselineData}
+            setSparklesData={setSparklesData}
+          />
           </Col>
         </Row>
         <Row>

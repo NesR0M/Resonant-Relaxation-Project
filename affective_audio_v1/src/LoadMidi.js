@@ -3,10 +3,8 @@ import { Midi } from "@tonejs/midi";
 import { Form, Button, Card, Row, Col } from 'react-bootstrap';
 import { notationExample, sparklesExample } from "./prompts"; // import examples
 
-const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComplete }) => {
+const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComplete, setBaselineData, setSparklesData }) => {
   const [file, setFile] = useState(null);
-  const [baselineData, setBaselineData] = useState(null);
-  const [sparklesData, setSparklesData] = useState(null);
   const [error, setError] = useState(null);
   const [midiType, setMidiType] = useState('baseline');
 
@@ -15,9 +13,9 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
       const baselineMidiJson = JSON.parse(notationExample);
       const sparklesMidiJson = JSON.parse(sparklesExample);
 
-      setBaselineData(baselineMidiJson);
-      setSparklesData(sparklesMidiJson);
-      console.log("examples loaded...");
+      setBaselineData(baselineMidiJson); // Update baseline data in App.js
+      setSparklesData(sparklesMidiJson); // Update sparkles data in App.js
+      console.log("Examples loaded...");
     } catch (e) {
       setError("Error loading example data: " + e.message);
       console.error("Error loading example data:", e);
@@ -28,7 +26,7 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
     setBaselineData(null);
     setSparklesData(null);
     setError(null);
-    console.log("baselineData deleted.");
+    console.log("Midi's deleted.");
   };
   
   const onFileChange = (event) => {

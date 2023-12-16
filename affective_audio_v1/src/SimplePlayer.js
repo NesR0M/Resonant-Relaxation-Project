@@ -9,7 +9,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
 
   useEffect(() => {
     // Create a PolySynth for baseline with ADSR envelope
-    const baselineSynth = new Tone.MonoSynth(Tone.Synth, {
+    const baselineSynth = new Tone.PolySynth(Tone.Synth, {
       voiceCount: 1,
       envelope: {
         attack: 0.5,
@@ -21,7 +21,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
     }).toDestination();
 
     // Create a simple Synth for sparkles without ADSR adjustments
-    const sparklesSynth = new Tone.Synth().toDestination();
+    const sparklesSynth = new Tone.PolySynth().toDestination();
 
     // Function to create Tone.Part for given MIDI data and synth
     const createPart = (midiJson, synth, partRef) => {
