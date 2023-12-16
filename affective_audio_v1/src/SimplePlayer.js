@@ -75,16 +75,17 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
   const togglePlayback = async () => {
     if (!isPlaying) {
       await Tone.start();
-      Tone.Transport.start();
-      baselinePartRef.current?.start(0);
-      sparklesPartRef.current?.start(0);
+      if (Tone.Transport.state !== "started") {
+        Tone.Transport.start();
+        baselinePartRef.current?.start(Tone.Transport.seconds);
+        sparklesPartRef.current?.start(Tone.Transport.seconds);
+      }
     } else {
-      baselinePartRef.current?.stop();
-      sparklesPartRef.current?.stop();
       Tone.Transport.pause();
     }
     setIsPlaying(!isPlaying);
   };
+  
 
   return (
     <Card bg="dark" text="white" className="mb-3">
