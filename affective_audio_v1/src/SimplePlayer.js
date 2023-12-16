@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
 import { Button, Card } from 'react-bootstrap';
 
-const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
+const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
   const baselinePartRef = useRef(null);
   const sparklesPartRef = useRef(null);
 
@@ -77,15 +78,32 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
       await Tone.start();
       if (Tone.Transport.state !== "started") {
         Tone.Transport.start();
-        baselinePartRef.current?.start(Tone.Transport.seconds);
-        sparklesPartRef.current?.start(Tone.Transport.seconds);
+        baselinePartRef.current?.start(0);
+        sparklesPartRef.current?.start(0);
       }
     } else {
       Tone.Transport.pause();
     }
     setIsPlaying(!isPlaying);
   };
+
+  const toggleLoop = () => {
+    setIsLooping(!isLooping);
+    Tone.Transport.loop = !Tone.Transport.loop;
   
+    // Use the duration from App.js (assuming it's the duration of the longer track)
+    if (durationInSeconds) {
+      Tone.Transport.loopEnd = durationInSeconds;
+      console.log(isLooping);
+      console.log(durationInSeconds);
+    }
+  };  
+  
+  const stopPlayback = () => {
+    Tone.Transport.stop();
+    Tone.Transport.seconds = 0; // Reset the transport time
+    setIsPlaying(false);
+  };  
 
   return (
     <Card bg="dark" text="white" className="mb-3">
@@ -93,9 +111,15 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData }) => {
         <Button onClick={togglePlayback} variant="outline-light">
           {isPlaying ? "Pause" : "Play"}
         </Button>
+        <Button onClick={stopPlayback} variant="outline-danger" className="ml-2">
+          Stop
+        </Button>
+        <Button onClick={toggleLoop} variant={isLooping ? "outline-success" : "outline-light"} className="ml-2">
+          Loop
+        </Button>
       </Card.Body>
     </Card>
-  );
+  );  
 };
 
 export default SimplePlayer;

@@ -114,6 +114,7 @@ function App() {
             <SimplePlayer
               baselineJsonData={baselineData}
               sparklesJsonData={sparklesData}
+              durationInSeconds={durationInSeconds}
             />
           </Col>
         </Row>

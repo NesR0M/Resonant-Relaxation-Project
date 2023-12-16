@@ -101,7 +101,7 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
             <Button variant="outline-light" onClick={loadExampleData}>Sample</Button>
           </Col>
           <Col sm={1}>
-            <Button variant="outline-light" onClick={resetData}>Clear</Button>
+            <Button variant="outline-danger" onClick={resetData}>Clear</Button>
           </Col>
         </Row>
       </Form>
