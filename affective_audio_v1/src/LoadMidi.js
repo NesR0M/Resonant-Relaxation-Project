@@ -82,32 +82,34 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
 
   // Inside your MidiLoader component
   return (
-    <>
-      <Form>
-        <Row className="align-items-center">
-          <Col sm={7}>
-            <Form.Control type="file" onChange={onFileChange} accept=".mid,.midi" />
-          </Col>
-          <Col sm={2}>
-            <Form.Select value={midiType} onChange={onTypeChange}>
-              <option value="baseline">Baseline</option>
-              <option value="sparkles">Sparkles</option>
-            </Form.Select>
-          </Col>
-          <Col sm={1}>
-            <Button variant="outline-light" onClick={onFileUpload} disabled={!file}>Upload</Button>
-          </Col>
-          <Col sm={1}>
-            <Button variant="outline-light" onClick={loadExampleData}>Sample</Button>
-          </Col>
-          <Col sm={1}>
-            <Button variant="outline-danger" onClick={resetData}>Clear</Button>
-          </Col>
-        </Row>
-      </Form>
-      {fileData()}
-    </>
-  );  
+    <Card bg="dark" text="white" className="mb-3">
+      <Card.Body>
+        <Form>
+          <Row className="align-items-center">
+            <Col xs={6} sm={6}>
+              <Form.Control type="file" onChange={onFileChange} accept=".mid,.midi" />
+            </Col>
+            <Col xs={6} sm={3}>
+              <Form.Select value={midiType} onChange={onTypeChange}>
+                <option value="baseline">Baseline</option>
+                <option value="sparkles">Sparkles</option>
+              </Form.Select>
+            </Col>
+            <Col xs={4} sm={1}>
+              <Button variant="outline-light" onClick={onFileUpload} disabled={!file}>Upload</Button>
+            </Col>
+            <Col xs={4} sm={1}>
+              <Button variant="outline-light" onClick={loadExampleData}>Sample</Button>
+            </Col>
+            <Col xs={4} sm={1}>
+              <Button variant="outline-danger" onClick={resetData}>Clear</Button>
+            </Col>
+          </Row>
+        </Form>
+        {fileData()}
+      </Card.Body>
+    </Card>
+  );
 };
 
 export default MidiLoader;

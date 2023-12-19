@@ -3,13 +3,12 @@ import logo from "./logo.svg";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Player from "./Player";
 import SimplePlayer from "./SimplePlayer";
 import MidiLoader from "./LoadMidi";
 import BaselineComposer from "./BaselineComposer";
 import SparkleComposer from "./SparkleComposer";
 
-import { Container, Row, Col, Button, Navbar, Alert } from "react-bootstrap";
+import { Container, Row, Col, Navbar, Alert } from "react-bootstrap";
 
 function App() {
   const [baselineData, setBaselineData] = useState(null);
@@ -95,20 +94,6 @@ function App() {
             />
           </Col>
         </Row>
-
-        <Row>
-          <Col>
-            <Player
-              baselineJsonData={baselineData}
-              sparklesJsonData={sparklesData}
-              onAttackInSecChange={attackInSec}
-              onDecayInSecChange={decayInSec}
-              onSustainInSecChange={sustainInSec}
-              onReleaseInSecChange={releaseInSec}
-            />
-          </Col>
-        </Row>
-
         <Row>
           <Col>
             <SimplePlayer
