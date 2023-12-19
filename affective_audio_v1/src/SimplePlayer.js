@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Form, Row, Col } from 'react-bootstrap';
 
 const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
+  const [highpassFreq, setHighpassFreq] = useState(500); // Default frequency
+  const [lowpassFreq, setLowpassFreq] = useState(1500); // Default frequency
   const baselinePartRef = useRef(null);
   const sparklesPartRef = useRef(null);
 
   useEffect(() => {
+    const highpassFilter = new Tone.Filter(highpassFreq, "highpass").toDestination();
+    const lowpassFilter = new Tone.Filter(lowpassFreq, "lowpass").toDestination();
+
     // Create a PolySynth for baseline with ADSR envelope
     const baselineSynth = new Tone.PolySynth(Tone.Synth, {
       voiceCount: 1,
@@ -19,11 +24,11 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
         release: 0.5,
         releaseCurve: "linear"
       }
-    }).toDestination();
+    }).connect(highpassFilter).connect(lowpassFilter);
 
     // Create a simple Synth for sparkles without ADSR adjustments
-    const sparklesSynth = new Tone.PolySynth().toDestination();
-
+    const sparklesSynth = new Tone.PolySynth().connect(highpassFilter).connect(lowpassFilter);
+    
     // Function to create Tone.Part for given MIDI data and synth
     const createPart = (midiJson, synth, partRef) => {
       const notes = midiJson.tracks.flatMap(track =>
@@ -70,7 +75,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
       }
       sparklesSynth.dispose();
     };
-  }, [baselineJsonData, sparklesJsonData]);
+  }, [baselineJsonData, sparklesJsonData, highpassFreq, lowpassFreq]);
 
   // Function to toggle playback
   const togglePlayback = async () => {
@@ -108,15 +113,53 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
   return (
     <Card bg="dark" text="white" className="mb-3">
       <Card.Body>
-        <Button onClick={togglePlayback} variant="outline-light">
-          {isPlaying ? "Pause" : "Play"}
-        </Button>
-        <Button onClick={stopPlayback} variant="outline-danger" className="ml-2">
-          Stop
-        </Button>
-        <Button onClick={toggleLoop} variant={isLooping ? "outline-success" : "outline-light"} className="ml-2">
-          Loop
-        </Button>
+        <Form>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Highpass Frequency: {highpassFreq}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="100"
+                max="2000"
+                value={highpassFreq}
+                onChange={(e) => setHighpassFreq(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+  
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Lowpass Frequency: {lowpassFreq}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="100"
+                max="2000"
+                value={lowpassFreq}
+                onChange={(e) => setLowpassFreq(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+  
+          <Row className="mt-3">
+            <Col>
+              <Button onClick={togglePlayback} variant="outline-light" disabled={!baselineJsonData && !sparklesJsonData}>
+                {isPlaying ? "Pause" : "Play"}
+              </Button>
+            </Col>
+            <Col>
+              <Button onClick={stopPlayback} variant="outline-danger" disabled={!baselineJsonData && !sparklesJsonData}>
+                Stop
+              </Button>
+            </Col>
+            <Col>
+              <Button onClick={toggleLoop} variant={isLooping ? "outline-success" : "outline-light"}>
+                Loop
+              </Button>
+            </Col>
+          </Row>
+        </Form>
       </Card.Body>
     </Card>
   );  
