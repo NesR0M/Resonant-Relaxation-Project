@@ -86,22 +86,24 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
       <Card.Body>
         <Form>
           <Row className="align-items-center">
-            <Col xs={6} sm={6}>
+            <Col>
               <Form.Control type="file" onChange={onFileChange} accept=".mid,.midi" />
             </Col>
-            <Col xs={6} sm={3}>
+            <Col>
               <Form.Select value={midiType} onChange={onTypeChange}>
                 <option value="baseline">Baseline</option>
                 <option value="sparkles">Sparkles</option>
               </Form.Select>
             </Col>
-            <Col xs={4} sm={1}>
+          </Row>
+          <Row className="align-items-center">
+            <Col>
               <Button variant="outline-light" onClick={onFileUpload} disabled={!file}>Upload</Button>
             </Col>
-            <Col xs={4} sm={1}>
+            <Col>
               <Button variant="outline-light" onClick={loadExampleData}>Sample</Button>
             </Col>
-            <Col xs={4} sm={1}>
+            <Col>
               <Button variant="outline-danger" onClick={resetData}>Clear</Button>
             </Col>
           </Row>

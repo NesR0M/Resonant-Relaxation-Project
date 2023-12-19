@@ -7,12 +7,23 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
   const [isLooping, setIsLooping] = useState(false);
   const [highpassFreq, setHighpassFreq] = useState(500); // Default frequency
   const [lowpassFreq, setLowpassFreq] = useState(1500); // Default frequency
+  const [reverbDecay, setReverbDecay] = useState(1.5);
+  const [reverbWet, setReverbWet] = useState(0.5);
   const baselinePartRef = useRef(null);
   const sparklesPartRef = useRef(null);
 
   useEffect(() => {
     const highpassFilter = new Tone.Filter(highpassFreq, "highpass").toDestination();
     const lowpassFilter = new Tone.Filter(lowpassFreq, "lowpass").toDestination();
+    const reverb = new Tone.Reverb({
+      decay: reverbDecay,
+      wet: reverbWet
+    }).toDestination();
+
+    highpassFilter.frequency.value = highpassFreq;
+    lowpassFilter.frequency.value = lowpassFreq;
+    reverb.decay = reverbDecay;
+    reverb.wet.value = reverbWet;
 
     // Create a PolySynth for baseline with ADSR envelope
     const baselineSynth = new Tone.PolySynth(Tone.Synth, {
@@ -24,10 +35,10 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
         release: 0.5,
         releaseCurve: "linear"
       }
-    }).connect(highpassFilter).connect(lowpassFilter);
+    }).connect(highpassFilter).connect(lowpassFilter).connect(reverb);
 
     // Create a simple Synth for sparkles without ADSR adjustments
-    const sparklesSynth = new Tone.PolySynth().connect(highpassFilter).connect(lowpassFilter);
+    const sparklesSynth = new Tone.PolySynth().connect(highpassFilter).connect(lowpassFilter).connect(reverb);
     
     // Function to create Tone.Part for given MIDI data and synth
     const createPart = (midiJson, synth, partRef) => {
@@ -75,7 +86,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
       }
       sparklesSynth.dispose();
     };
-  }, [baselineJsonData, sparklesJsonData, highpassFreq, lowpassFreq]);
+  }, [baselineJsonData, sparklesJsonData, highpassFreq, lowpassFreq, reverbDecay, reverbWet]);
 
   // Function to toggle playback
   const togglePlayback = async () => {
@@ -141,7 +152,37 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
               />
             </Col>
           </Form.Group>
-  
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Reverb Decay: {reverbDecay}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="0.1"
+                max="10"
+                step="0.1"
+                value={reverbDecay}
+                onChange={(e) => setReverbDecay(parseFloat(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Reverb Wet: {reverbWet}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="0"
+                max="1"
+                step="0.01"
+                value={reverbWet}
+                onChange={(e) => setReverbWet(parseFloat(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+          
           <Row className="mt-3">
             <Col>
               <Button onClick={togglePlayback} variant="outline-light" disabled={!baselineJsonData && !sparklesJsonData}>
