@@ -15,25 +15,28 @@ const RampingPlayer = ({
   const [reverbWet, setReverbWet] = useState(0.5);
   const baselinePartRef = useRef(null);
   const sparklesPartRef = useRef(null);
+  const [pitchShift, setPitchShift] = useState(0); // Default pitch shift down by 12 semitones
 
   useEffect(() => {
     const highpassFilter = new Tone.Filter(
       highpassFreq,
       "highpass"
     ).toDestination();
-    const lowpassFilter = new Tone.Filter(
-      lowpassFreq,
-      "lowpass"
-    ).toDestination();
+    const lowpassFilter = new Tone.Filter(lowpassFreq, "lowpass").connect(
+      highpassFilter
+    );
     const reverb = new Tone.Reverb({
       decay: reverbDecay,
       wet: reverbWet,
-    }).toDestination();
+    }).connect(lowpassFilter);
 
     highpassFilter.frequency.value = highpassFreq;
     lowpassFilter.frequency.value = lowpassFreq;
     reverb.decay = reverbDecay;
     reverb.wet.value = reverbWet;
+
+    const pitchShiftEffect = new Tone.PitchShift(pitchShift).connect(reverb);
+    pitchShiftEffect.pitch = pitchShift;
 
     // Create a PolySynth for baseline with ADSR envelope
     const baselineSynth = new Tone.PolySynth(Tone.Synth, {
@@ -45,16 +48,10 @@ const RampingPlayer = ({
         release: 0.5,
         releaseCurve: "linear",
       },
-    })
-      .connect(highpassFilter)
-      .connect(lowpassFilter)
-      .connect(reverb);
+    }).connect(pitchShiftEffect);
 
     // Create a simple Synth for sparkles without ADSR adjustments
-    const sparklesSynth = new Tone.PolySynth()
-      .connect(highpassFilter)
-      .connect(lowpassFilter)
-      .connect(reverb);
+    const sparklesSynth = new Tone.PolySynth().connect(pitchShiftEffect);
 
     // Function to create Tone.Part for given MIDI data and synth
     const createPart = (midiJson, synth, partRef) => {
@@ -108,6 +105,7 @@ const RampingPlayer = ({
       sparklesSynth.dispose();
     };
   }, [
+    pitchShift,
     baselineJsonData,
     sparklesJsonData,
     highpassFreq,
@@ -211,6 +209,21 @@ const RampingPlayer = ({
             </Col>
           </Form.Group>
 
+          {/* New Form Group for Pitch Shift */}
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm="6" className="text-white">
+              Pitch Shift: {pitchShift}
+            </Form.Label>
+            <Col sm="6">
+              <Form.Range
+                min="-24" // range from -24 to +24 semitones
+                max="24"
+                value={pitchShift}
+                onChange={(e) => setPitchShift(parseInt(e.target.value))}
+              />
+            </Col>
+          </Form.Group>
+
           <Row className="mt-3">
             <Col>
               <Button
@@ -244,3 +257,5 @@ const RampingPlayer = ({
     </Card>
   );
 };
+
+export default RampingPlayer;
