@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Tone from "tone";
-import { Button, Card, Form, Row, Col } from 'react-bootstrap';
+import { Button, Card, Form, Row, Col } from "react-bootstrap";
 
-const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds }) => {
+const SimplePlayer = ({
+  baselineJsonData,
+  sparklesJsonData,
+  durationInSeconds,
+}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const [highpassFreq, setHighpassFreq] = useState(500); // Default frequency
@@ -13,11 +17,17 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
   const sparklesPartRef = useRef(null);
 
   useEffect(() => {
-    const highpassFilter = new Tone.Filter(highpassFreq, "highpass").toDestination();
-    const lowpassFilter = new Tone.Filter(lowpassFreq, "lowpass").toDestination();
+    const highpassFilter = new Tone.Filter(
+      highpassFreq,
+      "highpass"
+    ).toDestination();
+    const lowpassFilter = new Tone.Filter(
+      lowpassFreq,
+      "lowpass"
+    ).toDestination();
     const reverb = new Tone.Reverb({
       decay: reverbDecay,
-      wet: reverbWet
+      wet: reverbWet,
     }).toDestination();
 
     highpassFilter.frequency.value = highpassFreq;
@@ -33,34 +43,45 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
         decay: 0.1,
         sustain: 0.3,
         release: 0.5,
-        releaseCurve: "linear"
-      }
-    }).connect(highpassFilter).connect(lowpassFilter).connect(reverb);
+        releaseCurve: "linear",
+      },
+    })
+      .connect(highpassFilter)
+      .connect(lowpassFilter)
+      .connect(reverb);
 
     // Create a simple Synth for sparkles without ADSR adjustments
-    const sparklesSynth = new Tone.PolySynth().connect(highpassFilter).connect(lowpassFilter).connect(reverb);
-    
+    const sparklesSynth = new Tone.PolySynth()
+      .connect(highpassFilter)
+      .connect(lowpassFilter)
+      .connect(reverb);
+
     // Function to create Tone.Part for given MIDI data and synth
     const createPart = (midiJson, synth, partRef) => {
-      const notes = midiJson.tracks.flatMap(track =>
+      const notes = midiJson.tracks.flatMap((track) =>
         track.notes.map((note, index, array) => {
-          let releaseTime = 0.5; 
+          let releaseTime = 0.5;
           if (index < array.length - 1) {
             const nextNoteTime = array[index + 1].time;
-            releaseTime = Math.max(nextNoteTime - note.time - note.duration, 0.1);
+            releaseTime = Math.max(
+              nextNoteTime - note.time - note.duration,
+              0.1
+            );
           }
           return {
             note: Tone.Frequency(note.midi, "midi").toNote(),
             time: note.time,
             duration: note.duration,
             attackTime: note.duration,
-            releaseTime: releaseTime
+            releaseTime: releaseTime,
           };
         })
       );
 
       partRef.current = new Tone.Part((time, note) => {
-        synth.set({ envelope: { attack: note.attackTime, release: note.releaseTime } });
+        synth.set({
+          envelope: { attack: note.attackTime, release: note.releaseTime },
+        });
         synth.triggerAttackRelease(note.note, note.duration, time);
       }, notes);
     };
@@ -86,7 +107,14 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
       }
       sparklesSynth.dispose();
     };
-  }, [baselineJsonData, sparklesJsonData, highpassFreq, lowpassFreq, reverbDecay, reverbWet]);
+  }, [
+    baselineJsonData,
+    sparklesJsonData,
+    highpassFreq,
+    lowpassFreq,
+    reverbDecay,
+    reverbWet,
+  ]);
 
   // Function to toggle playback
   const togglePlayback = async () => {
@@ -106,20 +134,20 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
   const toggleLoop = () => {
     setIsLooping(!isLooping);
     Tone.Transport.loop = !Tone.Transport.loop;
-  
+
     // Use the duration from App.js (assuming it's the duration of the longer track)
     if (durationInSeconds) {
       Tone.Transport.loopEnd = durationInSeconds;
       console.log(isLooping);
       console.log(durationInSeconds);
     }
-  };  
-  
+  };
+
   const stopPlayback = () => {
     Tone.Transport.stop();
     Tone.Transport.seconds = 0; // Reset the transport time
     setIsPlaying(false);
-  };  
+  };
 
   return (
     <Card bg="dark" text="white" className="mb-3">
@@ -138,7 +166,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
               />
             </Col>
           </Form.Group>
-  
+
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
               Lowpass Frequency: {lowpassFreq}
@@ -182,20 +210,31 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
               />
             </Col>
           </Form.Group>
-          
+
           <Row className="mt-3">
             <Col>
-              <Button onClick={togglePlayback} variant="outline-light" disabled={!baselineJsonData && !sparklesJsonData}>
+              <Button
+                onClick={togglePlayback}
+                variant="outline-light"
+                disabled={!baselineJsonData && !sparklesJsonData}
+              >
                 {isPlaying ? "Pause" : "Play"}
               </Button>
             </Col>
             <Col>
-              <Button onClick={stopPlayback} variant="outline-danger" disabled={!baselineJsonData && !sparklesJsonData}>
+              <Button
+                onClick={stopPlayback}
+                variant="outline-danger"
+                disabled={!baselineJsonData && !sparklesJsonData}
+              >
                 Stop
               </Button>
             </Col>
             <Col>
-              <Button onClick={toggleLoop} variant={isLooping ? "outline-success" : "outline-light"}>
+              <Button
+                onClick={toggleLoop}
+                variant={isLooping ? "outline-success" : "outline-light"}
+              >
                 Loop
               </Button>
             </Col>
@@ -203,7 +242,7 @@ const SimplePlayer = ({ baselineJsonData, sparklesJsonData, durationInSeconds })
         </Form>
       </Card.Body>
     </Card>
-  );  
+  );
 };
 
 export default SimplePlayer;

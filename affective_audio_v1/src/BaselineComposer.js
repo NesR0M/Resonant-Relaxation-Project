@@ -8,17 +8,16 @@ import { createMidi } from "./midiUtils";
 const BaselineComposer = ({
   onBaselineGenerated,
   onStartFrequencyChange,
+  onEndFrequencyChange,
+  onStartBPMChange,
+  onEndBPMChange,
   onDurationInSecondsChange,
-  onAttackInSecChange,
-  onDecayInSecChange,
-  onSustainInSecChange,
-  onReleaseInSecChange,
 }) => {
   const [startFrequency, setStartFrequency] = useState(180); // Default start frequency
   const [endFrequency, setEndFrequency] = useState(100); // Default end frequency NEW
   const [startBPM, setStartBPM] = useState(11); // Default start BPM NEW
   const [endBPM, setEndBPM] = useState(6); // Default end BPM NEW
-  const [durationInSeconds, setDurationInSeconds] = useState(5 * 60); // dont delete
+  const [durationInSeconds, setDurationInSeconds] = useState(5 * 60);
   // const [attackInSec, setAttackInSec] = useState(2); // dont delete
   // const [decayInSec, setDecayInSec] = useState(0); // dont delete
   // const [sustainInSec, setSustainInSec] = useState(0); // dont delete
@@ -49,7 +48,8 @@ const BaselineComposer = ({
       let t = currentTime / changeDuration;
 
       // Calculate the current values
-      let currentFrequency = lerp(startFrequency, endFrequency, t);
+      //with shift: let currentFrequency = lerp(startFrequency, endFrequency, t);
+      let currentFrequency = startFrequency;
       let currentBPM = lerp(startBPM, endBPM, t);
       let noteAndRestDuration = 60 / (2 * currentBPM); // Calculate note and rest duration
 
@@ -70,7 +70,8 @@ const BaselineComposer = ({
     while (currentTime < totalDuration) {
       // Add note
       track.addNote({
-        midi: Tone.ftom(endFrequency),
+        midi: Tone.ftom(startFrequency),
+        //with shift:  midi: Tone.ftom(endFrequency),
         time: currentTime,
         duration: finalNoteAndRestDuration,
         velocity: 0.8,
@@ -88,6 +89,9 @@ const BaselineComposer = ({
     console.log(midi);
 
     onStartFrequencyChange(startFrequency);
+    onEndFrequencyChange(endFrequency);
+    onStartBPMChange(startBPM);
+    onEndBPMChange(endBPM);
     onDurationInSecondsChange(durationInSeconds);
 
     createMidi(midi);
