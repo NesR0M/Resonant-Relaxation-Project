@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Card, Row, Col, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Row, Col, Alert } from "react-bootstrap";
 
 const APIKeyInput = ({ onSave }) => {
   const [apiKey, setApiKey] = useState("");
@@ -16,14 +16,17 @@ const APIKeyInput = ({ onSave }) => {
   return (
     <Card bg="dark" text="white" className="mb-3">
       <Card.Body>
+        <Card.Title style={{ textAlign: "left", fontWeight: "bold" }}>
+          GPT Key
+        </Card.Title>
         <Form>
           <Row className="align-items-center">
             <Col xs={10}>
-              <Form.Control 
-                type="text" 
-                placeholder="Enter OpenAI API Key" 
+              <Form.Control
+                type="text"
+                placeholder="Enter OpenAI API Key"
                 value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)} 
+                onChange={(e) => setApiKey(e.target.value)}
               />
             </Col>
             <Col xs={2}>
@@ -42,7 +45,7 @@ const APIKeyInput = ({ onSave }) => {
         </Form>
       </Card.Body>
     </Card>
-  );  
+  );
 };
 
 export default APIKeyInput;

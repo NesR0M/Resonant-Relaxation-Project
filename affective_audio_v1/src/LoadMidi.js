@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { Midi } from "@tonejs/midi";
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import { Form, Button, Card, Row, Col } from "react-bootstrap";
 import { notationExample, sparklesExample } from "./prompts"; // import examples
 
-const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComplete, setBaselineData, setSparklesData }) => {
+const MidiLoader = ({
+  onBaselineCompositionComplete,
+  onSparklesCompositionComplete,
+  setBaselineData,
+  setSparklesData,
+}) => {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
-  const [midiType, setMidiType] = useState('baseline');
+  const [midiType, setMidiType] = useState("baseline");
 
   const loadExampleData = () => {
     try {
@@ -28,7 +33,7 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
     setError(null);
     console.log("Midi's deleted.");
   };
-  
+
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -73,7 +78,9 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
             <Card.Title>File Details:</Card.Title>
             <Card.Text>File Name: {file.name}</Card.Text>
             <Card.Text>File Type: {file.type}</Card.Text>
-            <Card.Text>Last Modified: {file.lastModifiedDate.toDateString()}</Card.Text>
+            <Card.Text>
+              Last Modified: {file.lastModifiedDate.toDateString()}
+            </Card.Text>
           </Card.Body>
         </Card>
       );
@@ -84,10 +91,17 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
   return (
     <Card bg="dark" text="white" className="mb-3">
       <Card.Body>
+        <Card.Title style={{ textAlign: "left", fontWeight: "bold" }}>
+          Upload Midi
+        </Card.Title>
         <Form>
           <Row className="align-items-center">
             <Col>
-              <Form.Control type="file" onChange={onFileChange} accept=".mid,.midi" />
+              <Form.Control
+                type="file"
+                onChange={onFileChange}
+                accept=".mid,.midi"
+              />
             </Col>
             <Col>
               <Form.Select value={midiType} onChange={onTypeChange}>
@@ -98,13 +112,23 @@ const MidiLoader = ({ onBaselineCompositionComplete, onSparklesCompositionComple
           </Row>
           <Row className="align-items-center">
             <Col>
-              <Button variant="outline-light" onClick={onFileUpload} disabled={!file}>Upload</Button>
+              <Button
+                variant="outline-light"
+                onClick={onFileUpload}
+                disabled={!file}
+              >
+                Upload Midi
+              </Button>
             </Col>
             <Col>
-              <Button variant="outline-light" onClick={loadExampleData}>Sample</Button>
+              <Button variant="outline-light" onClick={loadExampleData}>
+                Sample
+              </Button>
             </Col>
             <Col>
-              <Button variant="outline-danger" onClick={resetData}>Clear</Button>
+              <Button variant="outline-danger" onClick={resetData}>
+                Clear
+              </Button>
             </Col>
           </Row>
         </Form>

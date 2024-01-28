@@ -97,6 +97,36 @@ const BaselineComposer = ({
     createMidi(midi);
   };
 
+  function frequencyToNote(frequency) {
+    const A4 = 440;
+    const noteNames = [
+      "C",
+      "C#",
+      "D",
+      "D#",
+      "E",
+      "F",
+      "F#",
+      "G",
+      "G#",
+      "A",
+      "A#",
+      "B",
+    ];
+
+    // Calculate the pitch number
+    let pitch = 69 + 12 * Math.log2(frequency / A4);
+    pitch = Math.round(pitch); // Round to the nearest whole number to get the closest note
+
+    // Calculate the octave
+    const octave = Math.floor(pitch / 12) - 1;
+
+    // Calculate the note index in the octave
+    const noteIndex = pitch % 12;
+
+    // Return the note name and octave
+    return noteNames[noteIndex] + octave;
+  }
   /*
   const generateMidiDEPRECATED = () => {
     console.log("Starting MIDI generation...");
@@ -163,7 +193,8 @@ const BaselineComposer = ({
         <Form>
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Start Frequency (Hz): {startFrequency}
+              Start Frequency : {startFrequency} Hz,{" "}
+              {frequencyToNote(startFrequency)}
             </Form.Label>
             <Col sm="6">
               <Form.Range
@@ -177,7 +208,7 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              End Frequency (Hz): {endFrequency}
+              End Frequency : {endFrequency}Hz, {frequencyToNote(endFrequency)}
             </Form.Label>
             <Col sm="6">
               <Form.Range
@@ -191,7 +222,7 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Start BPM (Seconds): {startBPM}
+              Start BrPM: {startBPM} Seconds
             </Form.Label>
             <Col sm="6">
               <Form.Range
@@ -206,7 +237,7 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              End BPM (Seconds): {endBPM}
+              End BrPM: {endBPM} Seconds
             </Form.Label>
             <Col sm="6">
               <Form.Range
@@ -221,7 +252,7 @@ const BaselineComposer = ({
 
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm="6" className="text-white">
-              Duration (Seconds): {durationInSeconds}
+              Duration: {durationInSeconds} Seconds
             </Form.Label>
             <Col sm="6">
               <Form.Range
