@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import OpenAI from "openai";
 import { notationExample, prompt4 } from "./prompts";
 import { createMidi } from "./midiUtils";
+import { Form, Button, Card, Alert } from "react-bootstrap";
 
-import { Form, Button, Card, Row, Col } from "react-bootstrap";
+const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
+  const [openai, setOpenai] = useState(null);
+  const [error, setError] = useState(null);
 
-// Initialize OpenAI only if the API key is available
-let openai;
-if (process.env.REACT_APP_OPENAI_KEY) {
-  openai = new OpenAI({
-    apiKey: process.env.REACT_APP_OPENAI_KEY,
-    dangerouslyAllowBrowser: true,
-  });
-} else {
-  console.error("OpenAI API key is not defined.");
-}
+  useEffect(() => {
+    if (apiKey) {
+      const openaiInstance = new OpenAI({
+        apiKey: apiKey,
+        dangerouslyAllowBrowser: true,
+      });
+      setOpenai(openaiInstance);
+    } else {
+      console.error("OpenAI API key is not provided.");
+      setError("OpenAI API key is not provided.");
+    }
+  }, [apiKey]);
 
-const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
   const cleanGPTOutput = (inputString) => {
     let startIndex = inputString.indexOf("{");
     let braceCount = 0;
@@ -50,6 +54,7 @@ const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
   const composeGPT = async () => {
     if (!openai) {
       console.error("OpenAI instance is not initialized.");
+      setError("OpenAI instance is not initialized.");
       return;
     }
 
@@ -114,13 +119,17 @@ const SparkleComposer = ({ baselineJsonData, sparklesJsonData }) => {
           Sparkles Composer
         </Card.Title>
         <Form>
-          <Button variant="outline-light" onClick={composeGPT}>
+          <Button 
+            variant="outline-light" 
+            onClick={composeGPT}
+            disabled={!apiKey}  // Disable the button if apiKey is not set
+          >
             Generate sparklesJsonData
           </Button>
         </Form>
       </Card.Body>
     </Card>
-  );
+  );  
 };
 
 export default SparkleComposer;

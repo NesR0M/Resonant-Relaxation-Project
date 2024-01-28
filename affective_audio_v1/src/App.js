@@ -8,6 +8,7 @@ import RampingPlayer from "./RampingPlayer";
 import MidiLoader from "./LoadMidi";
 import BaselineComposer from "./BaselineComposer";
 import SparkleComposer from "./SparkleComposer";
+import APIKeyInput from "./APIKeyInput";
 
 import { Container, Row, Col, Navbar, Alert } from "react-bootstrap";
 
@@ -15,7 +16,7 @@ function App() {
   const [baselineData, setBaselineData] = useState(null);
   const [error, setError] = useState(null);
   const [sparklesData, setSparklesData] = useState(null);
-
+  const [apiKey, setApiKey] = useState("");
   const [startFrequency, setStartFrequency] = useState(null);
   const [endFrequency, setEndFrequency] = useState(null);
   const [startBPM, setStartBPM] = useState(null);
@@ -61,7 +62,11 @@ function App() {
         </Navbar>
 
         {error && <Alert variant="danger">{error}</Alert>}
-
+        <Row>
+          <Col>
+            <APIKeyInput onSave={(key) => setApiKey(key)} />
+          </Col>
+        </Row>
         <Row>
           <Col>
             <MidiLoader
@@ -88,6 +93,7 @@ function App() {
         <Row>
           <Col>
             <SparkleComposer
+              apiKey={apiKey} // Pass the API key from the state
               baselineJsonData={baselineData}
               sparklesJsonData={handleSparklesComposition}
             />
