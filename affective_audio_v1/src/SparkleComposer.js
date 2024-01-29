@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import OpenAI from "openai";
-import { notationExample, prompt4 } from "./prompts";
+import { notationExample, promptRandom , promptLadder, promptChords} from "./prompts";
 import { createMidi } from "./midiUtils";
-import { Form, Button, Card, Alert } from "react-bootstrap";
+import { Form, Button, Card, Row, Col } from "react-bootstrap";
 
 const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
   const [openai, setOpenai] = useState(null);
@@ -51,7 +51,7 @@ const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
     return inputString.substring(startIndex, endIndex + 1);
   };
 
-  const composeGPT = async () => {
+  const composeGPT = async (promptToUse) => {
     if (!openai) {
       console.error("OpenAI instance is not initialized.");
       setError("OpenAI instance is not initialized.");
@@ -62,13 +62,13 @@ const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
     let prompt;
     if (baselineJsonData === null) {
       prompt =
-        prompt4 +
+        promptToUse +
         "This is the baseline and you compose a melody to that:" +
         notationExample +
         "Give me only the MIDI File Syntax nothing else.";
     } else {
       prompt =
-        prompt4 +
+        promptToUse +
         "This is the baseline and you compose a melody to that:" +
         baselineJsonData +
         "Give me only the MIDI File Syntax nothing else.";
@@ -119,13 +119,35 @@ const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
           Sparkles Composer
         </Card.Title>
         <Form>
-          <Button 
-            variant="outline-light" 
-            onClick={composeGPT}
-            disabled={!apiKey}  // Disable the button if apiKey is not set
-          >
-            Generate sparklesJsonData
-          </Button>
+        <Row className="align-items-center">
+            <Col>
+              <Button 
+                variant="outline-light" 
+                onClick={() => composeGPT(promptLadder)}
+                disabled={!apiKey}  // Disable the button if apiKey is not set
+              >
+                Generate Ladder
+              </Button>
+            </Col>
+            <Col>
+              <Button 
+                variant="outline-light" 
+                onClick={() => composeGPT(promptRandom)}
+                disabled={!apiKey}  // Disable the button if apiKey is not set
+              >
+                Generate Random
+              </Button>
+            </Col>
+            <Col>
+              <Button 
+                variant="outline-light" 
+                onClick={() => composeGPT(promptChords)}
+                disabled={!apiKey}  // Disable the button if apiKey is not set
+              >
+                Generate Chords
+              </Button>
+            </Col>
+          </Row>
         </Form>
       </Card.Body>
     </Card>
