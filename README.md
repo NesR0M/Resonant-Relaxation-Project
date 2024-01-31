@@ -13,8 +13,6 @@ git pull
 after downloading:
 go in the v1 directory (-> root directory)
 
-create a new .env file in the root directory and add the line: REACT_APP_OPENAI_KEY=<your_openai_api_key_here>
-
 to run the react (node.js) instance in your browser: 
 open a terminal in the root repository and run "npm install" to download the "node_modules" directory
 to start the server run "npm start"
