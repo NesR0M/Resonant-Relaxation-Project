@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import OpenAI from "openai";
-import { notationExample, promptRandom , promptLadder, promptChords} from "./prompts";
+import {
+  notationExample,
+  promptRandom,
+  promptLadder,
+  promptChords,
+} from "./prompts";
 import { createMidi } from "./midiUtils";
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
 
@@ -65,7 +70,7 @@ const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
         promptToUse +
         "This is the baseline and you compose a melody to that:" +
         notationExample +
-        "Give me only the MIDI File Syntax nothing else.";
+        "The file needs to be 20 Seconds long. Give me only the MIDI File Syntax nothing else.";
     } else {
       prompt =
         promptToUse +
@@ -119,39 +124,39 @@ const SparkleComposer = ({ apiKey, baselineJsonData, sparklesJsonData }) => {
           Sparkles Composer
         </Card.Title>
         <Form>
-        <Row className="align-items-center">
+          <Row className="align-items-center">
             <Col>
-              <Button 
-                variant="outline-light" 
+              <Button
+                variant="outline-light"
+                onClick={() => composeGPT(promptChords)}
+                disabled={!apiKey} // Disable the button if apiKey is not set
+              >
+                Generate Chords
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                variant="outline-light"
                 onClick={() => composeGPT(promptLadder)}
-                disabled={!apiKey}  // Disable the button if apiKey is not set
+                disabled={!apiKey} // Disable the button if apiKey is not set
               >
                 Generate Ladder
               </Button>
             </Col>
             <Col>
-              <Button 
-                variant="outline-light" 
+              <Button
+                variant="outline-light"
                 onClick={() => composeGPT(promptRandom)}
-                disabled={!apiKey}  // Disable the button if apiKey is not set
+                disabled={!apiKey} // Disable the button if apiKey is not set
               >
-                Generate Random
-              </Button>
-            </Col>
-            <Col>
-              <Button 
-                variant="outline-light" 
-                onClick={() => composeGPT(promptChords)}
-                disabled={!apiKey}  // Disable the button if apiKey is not set
-              >
-                Generate Chords
+                Generate Twinkles
               </Button>
             </Col>
           </Row>
         </Form>
       </Card.Body>
     </Card>
-  );  
+  );
 };
 
 export default SparkleComposer;
