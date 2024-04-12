@@ -1,6 +1,4 @@
-# Industry_Project
-Industry Project course for HCI Master in Salzburg
-
+# Resonant Relaxation - Affective State Change via Procedurally Generated Haptics Project 
 
 to upload (push files) use:
 git add *
