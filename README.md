@@ -1,5 +1,7 @@
 # Resonant Relaxation - Affective State Change via Procedurally Generated Haptics Project 
 
+# A working version of this tool can be accessed here: https://react-midi.netlify.app/
+
 to upload (push files) use:
 git add *
 git commit -am "<your message>"
